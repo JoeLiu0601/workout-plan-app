@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111827">
+  <title>我的健身菜單</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>我的健身菜單</h1>
+    <p>健身工廠版：新手增肌減脂（可手動編輯）</p>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <h2>每週安排</h2>
+      <div id="weeklySchedule"></div>
+      <button id="editScheduleBtn" class="btn">編輯每週安排</button>
+    </section>
+
+    <section class="panel">
+      <h2>重量建議</h2>
+      <ul id="loadGuide"></ul>
+    </section>
+
+    <section class="panel">
+      <h2>12 週漸進建議</h2>
+      <div id="progression"></div>
+    </section>
+
+    <section class="panel">
+      <div class="day-header">
+        <h2 id="dayTitle"></h2>
+        <div class="row">
+          <button id="editDayBtn" class="btn">編輯當天資訊</button>
+          <button id="prevDayBtn" class="btn">上一天</button>
+          <button id="nextDayBtn" class="btn">下一天</button>
+        </div>
+      </div>
+      <p id="dayFocus" class="muted"></p>
+      <div class="row checkin-toolbar">
+        <label>打卡日期
+          <input id="checkinDateInput" type="date">
+        </label>
+        <p id="checkinSummary" class="muted"></p>
+      </div>
+      <div id="exerciseList"></div>
+      <button id="addExerciseBtn" class="btn btn-primary">新增動作</button>
+    </section>
+
+    <section class="panel">
+      <h2>資料管理</h2>
+      <div class="row">
+        <button id="exportBtn" class="btn">匯出 JSON 備份</button>
+        <label class="btn">
+          匯入 JSON
+          <input id="importInput" type="file" accept="application/json" hidden>
+        </label>
+        <button id="resetBtn" class="btn btn-danger">重設為預設課表</button>
+      </div>
+      <p class="muted">提示：手機可將此頁加入主畫面，離線也能開啟。</p>
+    </section>
+  </main>
+
+  <dialog id="exerciseDialog">
+    <form id="exerciseForm" method="dialog" class="dialog-form">
+      <h3 id="dialogTitle">編輯動作</h3>
+      <input type="hidden" id="exerciseIndex">
+      <label>動作名稱<input id="nameInput" required></label>
+      <label>組數<input id="setsInput" required></label>
+      <label>次數/時間<input id="repsInput" required></label>
+      <label>主要肌群<input id="muscleInput"></label>
+      <label>常見錯誤/注意事項<textarea id="notesInput"></textarea></label>
+      <label>器材被占用替代動作<textarea id="altInput"></textarea></label>
+      <label>器材照片連結（可空白）<input id="imageInput" type="url" placeholder="https://..."></label>
+      <div class="row">
+        <button value="cancel" class="btn">取消</button>
+        <button id="saveExerciseBtn" value="default" class="btn btn-primary">儲存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="scheduleDialog">
+    <form id="scheduleForm" method="dialog" class="dialog-form">
+      <h3>編輯每週安排</h3>
+      <div id="scheduleEditor"></div>
+      <div class="row">
+        <button value="cancel" class="btn">取消</button>
+        <button id="saveScheduleBtn" value="default" class="btn btn-primary">儲存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
