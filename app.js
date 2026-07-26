@@ -88,6 +88,20 @@ const scheduleDialog = document.getElementById("scheduleDialog");
 const checkinDateInput = document.getElementById("checkinDateInput");
 const checkinSummaryEl = document.getElementById("checkinSummary");
 
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function normalizeText(value, fallback = "") {
+  if (typeof value !== "string") return fallback;
+  return value;
+}
+
 function getTodayDateKey() {
   const now = new Date();
   const y = now.getFullYear();
@@ -99,15 +113,36 @@ function getTodayDateKey() {
 function ensurePlanSchema(plan) {
   const normalized = structuredClone(plan);
   if (!normalized.checkins || typeof normalized.checkins !== "object") normalized.checkins = {};
-  if (!Array.isArray(normalized.days)) normalized.days = [];
+  if (!Array.isArray(normalized.loadGuide)) normalized.loadGuide = structuredClone(DEFAULT_PLAN.loadGuide);
+  if (!Array.isArray(normalized.progression)) normalized.progression = structuredClone(DEFAULT_PLAN.progression);
+  if (!Array.isArray(normalized.weeklySchedule)) normalized.weeklySchedule = structuredClone(DEFAULT_PLAN.weeklySchedule);
+  if (!Array.isArray(normalized.days)) normalized.days = structuredClone(DEFAULT_PLAN.days);
+
+  normalized.loadGuide = normalized.loadGuide.map(item => normalizeText(item, ""));
+  normalized.progression = normalized.progression.map(item => ({
+    phase: normalizeText(item?.phase, ""),
+    goal: normalizeText(item?.goal, "")
+  }));
+  normalized.weeklySchedule = normalized.weeklySchedule.map(item => ({
+    day: normalizeText(item?.day, ""),
+    plan: normalizeText(item?.plan, "")
+  }));
 
   normalized.days = normalized.days.map((day, dayIndex) => {
     const normalizedDay = { ...day };
     if (!normalizedDay.id) normalizedDay.id = `day-${dayIndex + 1}`;
+    normalizedDay.title = normalizeText(normalizedDay.title, `Day ${dayIndex + 1}`);
+    normalizedDay.focus = normalizeText(normalizedDay.focus, "");
     if (!Array.isArray(normalizedDay.exercises)) normalizedDay.exercises = [];
     normalizedDay.exercises = normalizedDay.exercises.map((exercise, exIndex) => ({
-      ...exercise,
-      id: exercise.id || `${normalizedDay.id}-ex-${exIndex + 1}`
+      id: exercise.id || `${normalizedDay.id}-ex-${exIndex + 1}`,
+      name: normalizeText(exercise.name, ""),
+      sets: normalizeText(exercise.sets, ""),
+      reps: normalizeText(exercise.reps, ""),
+      muscle: normalizeText(exercise.muscle, ""),
+      notes: normalizeText(exercise.notes, ""),
+      alternatives: normalizeText(exercise.alternatives, ""),
+      image: normalizeText(exercise.image, "")
     }));
     return normalizedDay;
   });
@@ -144,19 +179,19 @@ function renderWeeklySchedule() {
     <table>
       <thead><tr><th>星期</th><th>課表</th></tr></thead>
       <tbody>
-        ${state.weeklySchedule.map(item => `<tr><td>${item.day}</td><td>${item.plan}</td></tr>`).join("")}
+        ${state.weeklySchedule.map(item => `<tr><td>${escapeHtml(item.day)}</td><td>${escapeHtml(item.plan)}</td></tr>`).join("")}
       </tbody>
     </table>
   `;
 }
 
 function renderLoadGuide() {
-  loadGuideEl.innerHTML = state.loadGuide.map(item => `<li>${item}</li>`).join("");
+  loadGuideEl.innerHTML = state.loadGuide.map(item => `<li>${escapeHtml(item)}</li>`).join("");
 }
 
 function renderProgression() {
   progressionEl.innerHTML = state.progression
-    .map(item => `<p><strong>${item.phase}</strong>：${item.goal}</p>`)
+    .map(item => `<p><strong>${escapeHtml(item.phase)}</strong>：${escapeHtml(item.goal)}</p>`)
     .join("");
 }
 
@@ -171,17 +206,17 @@ function renderDay() {
 
   exerciseListEl.innerHTML = day.exercises.map((ex, index) => `
     <article class="exercise-card">
-      <h3>${index + 1}. ${ex.name}</h3>
+      <h3>${index + 1}. ${escapeHtml(ex.name)}</h3>
       <label class="checkin-box">
         <input type="checkbox" ${checkedMap[ex.id] ? "checked" : ""} onchange="toggleExerciseCheckin(${index}, this.checked)">
-        ${selectedCheckinDate} 打卡完成
+        ${escapeHtml(selectedCheckinDate)} 打卡完成
       </label>
-      <p><strong>組數：</strong>${ex.sets}</p>
-      <p><strong>次數：</strong>${ex.reps}</p>
-      <p><strong>主要肌群：</strong>${ex.muscle || "未填寫"}</p>
-      <p><strong>注意事項：</strong>${ex.notes || "未填寫"}</p>
-      <p><strong>替代動作：</strong>${ex.alternatives || "未填寫"}</p>
-      ${ex.image ? `<img class="exercise-image" src="${ex.image}" alt="${ex.name} 器材照片">` : ""}
+      <p><strong>組數：</strong>${escapeHtml(ex.sets)}</p>
+      <p><strong>次數：</strong>${escapeHtml(ex.reps)}</p>
+      <p><strong>主要肌群：</strong>${escapeHtml(ex.muscle || "未填寫")}</p>
+      <p><strong>注意事項：</strong>${escapeHtml(ex.notes || "未填寫")}</p>
+      <p><strong>替代動作：</strong>${escapeHtml(ex.alternatives || "未填寫")}</p>
+      ${ex.image ? `<img class="exercise-image" src="${escapeHtml(ex.image)}" alt="${escapeHtml(ex.name)} 器材照片">` : ""}
       <div class="row">
         <button class="btn" onclick="openExerciseDialog(${index})">編輯</button>
         <button class="btn btn-danger" onclick="deleteExercise(${index})">刪除</button>
@@ -255,10 +290,10 @@ function openScheduleDialog() {
   const editor = document.getElementById("scheduleEditor");
   editor.innerHTML = state.weeklySchedule.map((item, index) => `
     <label>${index + 1}. 星期
-      <input data-field="day" data-index="${index}" value="${item.day}">
+      <input data-field="day" data-index="${index}" value="${escapeHtml(item.day)}">
     </label>
     <label>課表
-      <input data-field="plan" data-index="${index}" value="${item.plan}">
+      <input data-field="plan" data-index="${index}" value="${escapeHtml(item.plan)}">
     </label>
   `).join("");
   scheduleDialog.showModal();
@@ -294,6 +329,7 @@ function importJson(event) {
   reader.onload = () => {
     try {
       const parsed = JSON.parse(String(reader.result));
+      if (!parsed || typeof parsed !== "object") throw new Error("invalid schema");
       if (!parsed.days || !Array.isArray(parsed.days)) throw new Error("invalid schema");
       state = ensurePlanSchema(parsed);
       currentDayIndex = 0;
