@@ -1,4 +1,21 @@
 const STORAGE_KEY = "workout-plan-v1";
+const QUICK_FOOD_PRESETS = [
+  { id: "chicken-breast-cooked-100g", name: "雞胸肉（熟）", amount: "100 g", calories: 165, protein: 31, carbs: 0, fat: 3.6 },
+  { id: "egg-whole-1", name: "全蛋", amount: "1 顆", calories: 72, protein: 6.3, carbs: 0.4, fat: 4.8 },
+  { id: "egg-white-1", name: "蛋白", amount: "1 顆", calories: 17, protein: 3.6, carbs: 0.2, fat: 0 },
+  { id: "whey-30g", name: "乳清蛋白", amount: "1 匙（30 g）", calories: 120, protein: 24, carbs: 3, fat: 2 },
+  { id: "greek-yogurt-200g", name: "希臘優格（無糖）", amount: "200 g", calories: 146, protein: 20, carbs: 8, fat: 4 },
+  { id: "oats-50g", name: "燕麥片", amount: "50 g", calories: 190, protein: 6.5, carbs: 32, fat: 3.5 },
+  { id: "rice-cooked-150g", name: "白飯（熟）", amount: "150 g", calories: 234, protein: 4, carbs: 52, fat: 0.4 },
+  { id: "sweet-potato-200g", name: "地瓜（熟）", amount: "200 g", calories: 172, protein: 3.2, carbs: 40, fat: 0.2 },
+  { id: "banana-1", name: "香蕉", amount: "1 根（中）", calories: 105, protein: 1.3, carbs: 27, fat: 0.3 },
+  { id: "salmon-100g", name: "鮭魚", amount: "100 g", calories: 208, protein: 20, carbs: 0, fat: 13 },
+  { id: "tofu-firm-100g", name: "板豆腐", amount: "100 g", calories: 144, protein: 17, carbs: 3, fat: 9 },
+  { id: "tuna-water-100g", name: "鮪魚罐頭（水煮）", amount: "100 g", calories: 116, protein: 26, carbs: 0, fat: 1 },
+  { id: "almond-30g", name: "杏仁", amount: "30 g", calories: 174, protein: 6, carbs: 6, fat: 15 },
+  { id: "olive-oil-10g", name: "橄欖油", amount: "10 g", calories: 90, protein: 0, carbs: 0, fat: 10 },
+  { id: "lowfat-milk-300ml", name: "低脂牛奶", amount: "300 ml", calories: 141, protein: 10, carbs: 15, fat: 4 }
+];
 
 const DEFAULT_PLAN = {
   loadGuide: [
@@ -91,6 +108,7 @@ const foodDateInput = document.getElementById("foodDateInput");
 const foodSummaryEl = document.getElementById("foodSummary");
 const foodListEl = document.getElementById("foodList");
 const foodDialog = document.getElementById("foodDialog");
+const quickFoodListEl = document.getElementById("quickFoodList");
 
 function escapeHtml(value) {
   return String(value)
@@ -201,6 +219,7 @@ function renderAll() {
   renderLoadGuide();
   renderProgression();
   renderDay();
+  renderQuickFoodPresets();
   renderFoodLog();
 }
 
@@ -293,6 +312,38 @@ function renderFoodLog() {
       </div>
     </article>
   `).join("");
+}
+
+function renderQuickFoodPresets() {
+  quickFoodListEl.innerHTML = QUICK_FOOD_PRESETS.map(preset => `
+    <button class="btn quick-food-btn" onclick="addPresetFood('${preset.id}')">
+      <strong>${escapeHtml(preset.name)}</strong>
+      <small>${escapeHtml(preset.amount)}｜${escapeHtml(preset.calories)} kcal / P${escapeHtml(preset.protein)} C${escapeHtml(preset.carbs)} F${escapeHtml(preset.fat)}</small>
+    </button>
+  `).join("");
+}
+
+function addPresetFood(presetId) {
+  const preset = QUICK_FOOD_PRESETS.find(item => item.id === presetId);
+  if (!preset) {
+    alert("找不到此常用食物預設。");
+    return;
+  }
+
+  const entries = getCurrentFoodEntries();
+  entries.push({
+    id: `food-${selectedCheckinDate}-${Date.now()}`,
+    time: "",
+    name: preset.name,
+    amount: preset.amount,
+    calories: preset.calories,
+    protein: preset.protein,
+    carbs: preset.carbs,
+    fat: preset.fat,
+    note: "快速新增（估算值，可自行調整）"
+  });
+  saveState();
+  renderFoodLog();
 }
 
 function openExerciseDialog(index = -1) {
@@ -557,6 +608,7 @@ window.deleteExercise = deleteExercise;
 window.toggleExerciseCheckin = toggleExerciseCheckin;
 window.openFoodDialog = openFoodDialog;
 window.deleteFoodEntry = deleteFoodEntry;
+window.addPresetFood = addPresetFood;
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./sw.js").catch(err => console.error("SW 註冊失敗", err));
