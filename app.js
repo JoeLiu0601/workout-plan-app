@@ -30,7 +30,26 @@ const QUICK_FOOD_PRESETS = [
   { id: "peanut-butter-16g", name: "花生醬", amount: "1 匙（16 g）", calories: 94, protein: 3.6, carbs: 3.2, fat: 8 },
   { id: "apple-1", name: "蘋果", amount: "1 顆（中）", calories: 95, protein: 0.5, carbs: 25, fat: 0.3 },
   { id: "broccoli-cooked-150g", name: "花椰菜（熟）", amount: "150 g", calories: 51, protein: 4.2, carbs: 10.2, fat: 0.6 },
-  { id: "protein-bar-1", name: "蛋白棒", amount: "1 支", calories: 210, protein: 20, carbs: 22, fat: 7 }
+  { id: "protein-bar-1", name: "蛋白棒", amount: "1 支", calories: 210, protein: 20, carbs: 22, fat: 7 },
+  { id: "tea-egg-1", name: "茶葉蛋", amount: "1 顆", calories: 70, protein: 6, carbs: 1, fat: 5 },
+  { id: "rice-ball-tuna-1", name: "鮪魚飯糰", amount: "1 顆", calories: 230, protein: 7, carbs: 40, fat: 5 },
+  { id: "black-coffee-unsweetened", name: "黑咖啡（無糖）", amount: "1 杯", calories: 5, protein: 0, carbs: 0, fat: 0 },
+  { id: "high-protein-milk-375ml", name: "高蛋白牛奶", amount: "375 ml", calories: 210, protein: 20, carbs: 18, fat: 6 },
+  { id: "chicken-bento-rice-2-3", name: "雞腿便當（飯 2/3）", amount: "1 份", calories: 680, protein: 35, carbs: 75, fat: 26 },
+  { id: "pork-chop-bento-rice-1-2", name: "排骨便當（飯 1/2）", amount: "1 份", calories: 650, protein: 30, carbs: 65, fat: 30 },
+  { id: "fish-bento-rice-2-3", name: "魚類便當（飯 2/3）", amount: "1 份", calories: 620, protein: 34, carbs: 72, fat: 20 },
+  { id: "self-serve-2veg-tofu-rice-half", name: "自助餐（肉+豆腐+2菜+半碗飯）", amount: "1 份", calories: 560, protein: 33, carbs: 52, fat: 23 },
+  { id: "luwei-chicken-egg-tofu-vermicelli", name: "滷味（雞肉+蛋+豆干+青菜+冬粉）", amount: "1 份", calories: 520, protein: 38, carbs: 40, fat: 20 },
+  { id: "beef-soup-rice-half", name: "牛肉湯 + 半碗飯", amount: "1 份", calories: 430, protein: 30, carbs: 38, fat: 16 },
+  { id: "hotpot-meat-tofu-egg-rice-half", name: "小火鍋（肉+豆腐+蛋+菜+半碗飯）", amount: "1 份", calories: 620, protein: 42, carbs: 45, fat: 30 },
+  { id: "beef-noodle-2-3-noodle", name: "牛肉麵（麵 2/3）", amount: "1 碗", calories: 560, protein: 28, carbs: 62, fat: 22 },
+  { id: "chicken-rice-plus-egg-veg", name: "雞肉飯 + 滷蛋 + 青菜", amount: "1 份", calories: 520, protein: 25, carbs: 62, fat: 18 },
+  { id: "braised-tofu-dried-100g", name: "豆干", amount: "100 g", calories: 160, protein: 16, carbs: 8, fat: 7 },
+  { id: "rice-cooked-half-bowl", name: "白飯（半碗）", amount: "100 g", calories: 156, protein: 2.7, carbs: 34, fat: 0.3 },
+  { id: "rice-cooked-two-third-bowl", name: "白飯（2/3 碗）", amount: "130 g", calories: 203, protein: 3.5, carbs: 44, fat: 0.4 },
+  { id: "store-chicken-breast-pack", name: "超商舒肥雞胸", amount: "1 包", calories: 130, protein: 23, carbs: 2, fat: 3 },
+  { id: "store-salad-chicken", name: "超商生菜沙拉 + 雞胸", amount: "1 份", calories: 260, protein: 25, carbs: 12, fat: 10 },
+  { id: "yogurt-high-protein-cup", name: "高蛋白優格杯", amount: "1 杯", calories: 180, protein: 15, carbs: 18, fat: 5 }
 ];
 
 const DEFAULT_PLAN = {
