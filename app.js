@@ -14,7 +14,23 @@ const QUICK_FOOD_PRESETS = [
   { id: "tuna-water-100g", name: "鮪魚罐頭（水煮）", amount: "100 g", calories: 116, protein: 26, carbs: 0, fat: 1 },
   { id: "almond-30g", name: "杏仁", amount: "30 g", calories: 174, protein: 6, carbs: 6, fat: 15 },
   { id: "olive-oil-10g", name: "橄欖油", amount: "10 g", calories: 90, protein: 0, carbs: 0, fat: 10 },
-  { id: "lowfat-milk-300ml", name: "低脂牛奶", amount: "300 ml", calories: 141, protein: 10, carbs: 15, fat: 4 }
+  { id: "lowfat-milk-300ml", name: "低脂牛奶", amount: "300 ml", calories: 141, protein: 10, carbs: 15, fat: 4 },
+  { id: "edamame-100g", name: "毛豆", amount: "100 g", calories: 121, protein: 11.9, carbs: 8.9, fat: 5.2 },
+  { id: "shrimp-100g", name: "蝦仁", amount: "100 g", calories: 99, protein: 24, carbs: 0.2, fat: 0.3 },
+  { id: "tilapia-100g", name: "鯛魚", amount: "100 g", calories: 128, protein: 26, carbs: 0, fat: 2.7 },
+  { id: "lean-beef-100g", name: "瘦牛肉", amount: "100 g", calories: 217, protein: 26, carbs: 0, fat: 12 },
+  { id: "pork-tenderloin-100g", name: "豬里肌", amount: "100 g", calories: 143, protein: 26, carbs: 0, fat: 3.5 },
+  { id: "chicken-thigh-skinless-100g", name: "去皮雞腿肉", amount: "100 g", calories: 177, protein: 24, carbs: 0, fat: 8.4 },
+  { id: "cottage-cheese-150g", name: "茅屋起司", amount: "150 g", calories: 147, protein: 17, carbs: 5, fat: 6 },
+  { id: "soy-milk-unsweetened-300ml", name: "無糖豆漿", amount: "300 ml", calories: 99, protein: 9, carbs: 5, fat: 4.8 },
+  { id: "brown-rice-cooked-150g", name: "糙米飯（熟）", amount: "150 g", calories: 168, protein: 3.9, carbs: 35, fat: 1.3 },
+  { id: "whole-wheat-bread-2-slices", name: "全麥吐司", amount: "2 片", calories: 160, protein: 8, carbs: 28, fat: 2 },
+  { id: "potato-boiled-200g", name: "馬鈴薯（水煮）", amount: "200 g", calories: 174, protein: 4.6, carbs: 40, fat: 0.2 },
+  { id: "avocado-half", name: "酪梨", amount: "1/2 顆", calories: 160, protein: 2, carbs: 8.5, fat: 14.7 },
+  { id: "peanut-butter-16g", name: "花生醬", amount: "1 匙（16 g）", calories: 94, protein: 3.6, carbs: 3.2, fat: 8 },
+  { id: "apple-1", name: "蘋果", amount: "1 顆（中）", calories: 95, protein: 0.5, carbs: 25, fat: 0.3 },
+  { id: "broccoli-cooked-150g", name: "花椰菜（熟）", amount: "150 g", calories: 51, protein: 4.2, carbs: 10.2, fat: 0.6 },
+  { id: "protein-bar-1", name: "蛋白棒", amount: "1 支", calories: 210, protein: 20, carbs: 22, fat: 7 }
 ];
 
 const DEFAULT_PLAN = {
