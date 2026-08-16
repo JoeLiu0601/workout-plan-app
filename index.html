@@ -52,6 +52,20 @@
     </section>
 
     <section class="panel">
+      <div class="day-header">
+        <h2>每日飲食紀錄</h2>
+        <button id="addFoodBtn" class="btn btn-primary">新增飲食</button>
+      </div>
+      <div class="row checkin-toolbar">
+        <label>飲食日期
+          <input id="foodDateInput" type="date">
+        </label>
+        <p id="foodSummary" class="muted"></p>
+      </div>
+      <div id="foodList"></div>
+    </section>
+
+    <section class="panel">
       <h2>資料管理</h2>
       <div class="row">
         <button id="exportBtn" class="btn">匯出 JSON 備份</button>
@@ -90,6 +104,25 @@
       <div class="row">
         <button value="cancel" class="btn">取消</button>
         <button id="saveScheduleBtn" value="default" class="btn btn-primary">儲存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="foodDialog">
+    <form id="foodForm" method="dialog" class="dialog-form">
+      <h3 id="foodDialogTitle">新增飲食</h3>
+      <input type="hidden" id="foodIndex">
+      <label>時間（可空白）<input id="foodTimeInput" placeholder="例如 08:30"></label>
+      <label>食物名稱<input id="foodNameInput" required></label>
+      <label>份量<input id="foodAmountInput" placeholder="例如 雞胸肉 150g"></label>
+      <label>熱量（kcal）<input id="foodCaloriesInput" inputmode="decimal"></label>
+      <label>蛋白質（g）<input id="foodProteinInput" inputmode="decimal"></label>
+      <label>碳水（g）<input id="foodCarbsInput" inputmode="decimal"></label>
+      <label>脂肪（g）<input id="foodFatInput" inputmode="decimal"></label>
+      <label>備註<textarea id="foodNoteInput"></textarea></label>
+      <div class="row">
+        <button value="cancel" class="btn">取消</button>
+        <button id="saveFoodBtn" value="default" class="btn btn-primary">儲存</button>
       </div>
     </form>
   </dialog>

@@ -87,6 +87,10 @@ const exerciseDialog = document.getElementById("exerciseDialog");
 const scheduleDialog = document.getElementById("scheduleDialog");
 const checkinDateInput = document.getElementById("checkinDateInput");
 const checkinSummaryEl = document.getElementById("checkinSummary");
+const foodDateInput = document.getElementById("foodDateInput");
+const foodSummaryEl = document.getElementById("foodSummary");
+const foodListEl = document.getElementById("foodList");
+const foodDialog = document.getElementById("foodDialog");
 
 function escapeHtml(value) {
   return String(value)
@@ -102,6 +106,12 @@ function normalizeText(value, fallback = "") {
   return value;
 }
 
+function normalizeNumber(value) {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num < 0) return "";
+  return num;
+}
+
 function getTodayDateKey() {
   const now = new Date();
   const y = now.getFullYear();
@@ -113,6 +123,7 @@ function getTodayDateKey() {
 function ensurePlanSchema(plan) {
   const normalized = structuredClone(plan);
   if (!normalized.checkins || typeof normalized.checkins !== "object") normalized.checkins = {};
+  if (!normalized.foodLogs || typeof normalized.foodLogs !== "object") normalized.foodLogs = {};
   if (!Array.isArray(normalized.loadGuide)) normalized.loadGuide = structuredClone(DEFAULT_PLAN.loadGuide);
   if (!Array.isArray(normalized.progression)) normalized.progression = structuredClone(DEFAULT_PLAN.progression);
   if (!Array.isArray(normalized.weeklySchedule)) normalized.weeklySchedule = structuredClone(DEFAULT_PLAN.weeklySchedule);
@@ -147,6 +158,24 @@ function ensurePlanSchema(plan) {
     return normalizedDay;
   });
 
+  Object.keys(normalized.foodLogs).forEach(dateKey => {
+    if (!Array.isArray(normalized.foodLogs[dateKey])) {
+      normalized.foodLogs[dateKey] = [];
+      return;
+    }
+    normalized.foodLogs[dateKey] = normalized.foodLogs[dateKey].map((entry, index) => ({
+      id: normalizeText(entry?.id, `food-${dateKey}-${index + 1}`),
+      time: normalizeText(entry?.time, ""),
+      name: normalizeText(entry?.name, ""),
+      amount: normalizeText(entry?.amount, ""),
+      calories: normalizeNumber(entry?.calories),
+      protein: normalizeNumber(entry?.protein),
+      carbs: normalizeNumber(entry?.carbs),
+      fat: normalizeNumber(entry?.fat),
+      note: normalizeText(entry?.note, "")
+    }));
+  });
+
   return normalized;
 }
 
@@ -172,6 +201,7 @@ function renderAll() {
   renderLoadGuide();
   renderProgression();
   renderDay();
+  renderFoodLog();
 }
 
 function renderWeeklySchedule() {
@@ -220,6 +250,46 @@ function renderDay() {
       <div class="row">
         <button class="btn" onclick="openExerciseDialog(${index})">編輯</button>
         <button class="btn btn-danger" onclick="deleteExercise(${index})">刪除</button>
+      </div>
+    </article>
+  `).join("");
+}
+
+function getCurrentFoodEntries() {
+  if (!state.foodLogs[selectedCheckinDate]) state.foodLogs[selectedCheckinDate] = [];
+  return state.foodLogs[selectedCheckinDate];
+}
+
+function renderFoodLog() {
+  foodDateInput.value = selectedCheckinDate;
+  const entries = getCurrentFoodEntries();
+  const totalCalories = entries.reduce((sum, item) => sum + (typeof item.calories === "number" ? item.calories : 0), 0);
+  const totalProtein = entries.reduce((sum, item) => sum + (typeof item.protein === "number" ? item.protein : 0), 0);
+  const totalCarbs = entries.reduce((sum, item) => sum + (typeof item.carbs === "number" ? item.carbs : 0), 0);
+  const totalFat = entries.reduce((sum, item) => sum + (typeof item.fat === "number" ? item.fat : 0), 0);
+
+  foodSummaryEl.textContent = `共 ${entries.length} 筆｜熱量 ${totalCalories.toFixed(0)} kcal｜P ${totalProtein.toFixed(1)} / C ${totalCarbs.toFixed(1)} / F ${totalFat.toFixed(1)}`;
+
+  if (!entries.length) {
+    foodListEl.innerHTML = `<p class="muted">這天還沒有飲食紀錄。</p>`;
+    return;
+  }
+
+  foodListEl.innerHTML = entries.map((entry, index) => `
+    <article class="food-card">
+      <h3>${index + 1}. ${escapeHtml(entry.name || "未命名")}</h3>
+      <p><strong>時間：</strong>${escapeHtml(entry.time || "未填寫")}</p>
+      <p><strong>份量：</strong>${escapeHtml(entry.amount || "未填寫")}</p>
+      <div class="food-grid">
+        <p><strong>熱量：</strong>${entry.calories === "" ? "未填寫" : `${escapeHtml(entry.calories)} kcal`}</p>
+        <p><strong>蛋白質：</strong>${entry.protein === "" ? "未填寫" : `${escapeHtml(entry.protein)} g`}</p>
+        <p><strong>碳水：</strong>${entry.carbs === "" ? "未填寫" : `${escapeHtml(entry.carbs)} g`}</p>
+        <p><strong>脂肪：</strong>${entry.fat === "" ? "未填寫" : `${escapeHtml(entry.fat)} g`}</p>
+      </div>
+      <p><strong>備註：</strong>${escapeHtml(entry.note || "未填寫")}</p>
+      <div class="row">
+        <button class="btn" onclick="openFoodDialog(${index})">編輯</button>
+        <button class="btn btn-danger" onclick="deleteFoodEntry(${index})">刪除</button>
       </div>
     </article>
   `).join("");
@@ -385,6 +455,76 @@ function toggleExerciseCheckin(index, checked) {
   renderDay();
 }
 
+function openFoodDialog(index = -1) {
+  const entries = getCurrentFoodEntries();
+  const entry = index >= 0 ? entries[index] : {
+    id: "", time: "", name: "", amount: "", calories: "", protein: "", carbs: "", fat: "", note: ""
+  };
+
+  document.getElementById("foodIndex").value = String(index);
+  document.getElementById("foodDialogTitle").textContent = index >= 0 ? "編輯飲食" : "新增飲食";
+  document.getElementById("foodTimeInput").value = entry.time || "";
+  document.getElementById("foodNameInput").value = entry.name || "";
+  document.getElementById("foodAmountInput").value = entry.amount || "";
+  document.getElementById("foodCaloriesInput").value = entry.calories === "" ? "" : String(entry.calories);
+  document.getElementById("foodProteinInput").value = entry.protein === "" ? "" : String(entry.protein);
+  document.getElementById("foodCarbsInput").value = entry.carbs === "" ? "" : String(entry.carbs);
+  document.getElementById("foodFatInput").value = entry.fat === "" ? "" : String(entry.fat);
+  document.getElementById("foodNoteInput").value = entry.note || "";
+  foodDialog.showModal();
+}
+
+function saveFoodFromDialog(event) {
+  event.preventDefault();
+  const index = Number(document.getElementById("foodIndex").value);
+  const payload = {
+    id: "",
+    time: document.getElementById("foodTimeInput").value.trim(),
+    name: document.getElementById("foodNameInput").value.trim(),
+    amount: document.getElementById("foodAmountInput").value.trim(),
+    calories: normalizeNumber(document.getElementById("foodCaloriesInput").value.trim()),
+    protein: normalizeNumber(document.getElementById("foodProteinInput").value.trim()),
+    carbs: normalizeNumber(document.getElementById("foodCarbsInput").value.trim()),
+    fat: normalizeNumber(document.getElementById("foodFatInput").value.trim()),
+    note: document.getElementById("foodNoteInput").value.trim()
+  };
+
+  if (!payload.name) {
+    alert("請填入食物名稱。");
+    return;
+  }
+
+  const entries = getCurrentFoodEntries();
+  if (index >= 0) {
+    payload.id = entries[index].id;
+    entries[index] = payload;
+  } else {
+    payload.id = `food-${selectedCheckinDate}-${Date.now()}`;
+    entries.push(payload);
+  }
+
+  saveState();
+  renderFoodLog();
+  foodDialog.close();
+}
+
+function deleteFoodEntry(index) {
+  const ok = confirm("確定刪除此筆飲食紀錄？");
+  if (!ok) return;
+  const entries = getCurrentFoodEntries();
+  entries.splice(index, 1);
+  saveState();
+  renderFoodLog();
+}
+
+function setSelectedDate(nextDate) {
+  selectedCheckinDate = nextDate;
+  checkinDateInput.value = selectedCheckinDate;
+  foodDateInput.value = selectedCheckinDate;
+  renderDay();
+  renderFoodLog();
+}
+
 document.getElementById("prevDayBtn").addEventListener("click", () => {
   currentDayIndex = (currentDayIndex - 1 + state.days.length) % state.days.length;
   renderDay();
@@ -401,15 +541,22 @@ document.getElementById("exportBtn").addEventListener("click", exportJson);
 document.getElementById("importInput").addEventListener("change", importJson);
 document.getElementById("resetBtn").addEventListener("click", resetPlan);
 document.getElementById("editDayBtn").addEventListener("click", editCurrentDayMeta);
+document.getElementById("addFoodBtn").addEventListener("click", () => openFoodDialog(-1));
+document.getElementById("foodForm").addEventListener("submit", saveFoodFromDialog);
 checkinDateInput.addEventListener("change", () => {
   if (!checkinDateInput.value) return;
-  selectedCheckinDate = checkinDateInput.value;
-  renderDay();
+  setSelectedDate(checkinDateInput.value);
+});
+foodDateInput.addEventListener("change", () => {
+  if (!foodDateInput.value) return;
+  setSelectedDate(foodDateInput.value);
 });
 
 window.openExerciseDialog = openExerciseDialog;
 window.deleteExercise = deleteExercise;
 window.toggleExerciseCheckin = toggleExerciseCheckin;
+window.openFoodDialog = openFoodDialog;
+window.deleteFoodEntry = deleteFoodEntry;
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./sw.js").catch(err => console.error("SW 註冊失敗", err));
