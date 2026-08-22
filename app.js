@@ -99,7 +99,52 @@ const QUICK_FOOD_PRESETS = [
   { id: "gua-bao-1", name: "刈包", category: "外食", amount: "1 顆", calories: 350, protein: 14, carbs: 46, fat: 11 },
   { id: "pig-blood-cake-1", name: "豬血糕", category: "點心", amount: "1 串", calories: 130, protein: 5, carbs: 25, fat: 2 },
   { id: "grass-jelly-1", name: "仙草凍（少糖）", category: "點心", amount: "1 份", calories: 90, protein: 0.3, carbs: 22, fat: 0 },
-  { id: "pineapple-cake-1", name: "鳳梨酥", category: "點心", amount: "1 個", calories: 155, protein: 1.8, carbs: 21, fat: 7 }
+  { id: "pineapple-cake-1", name: "鳳梨酥", category: "點心", amount: "1 個", calories: 155, protein: 1.8, carbs: 21, fat: 7 },
+  { id: "chicken-tender-100g", name: "雞里肌", category: "蛋白質", amount: "100 g", calories: 110, protein: 24, carbs: 0, fat: 1.5 },
+  { id: "turkey-slices-80g", name: "火雞胸肉片", category: "蛋白質", amount: "80 g", calories: 84, protein: 17, carbs: 2, fat: 1 },
+  { id: "lean-ground-pork-100g", name: "瘦絞肉", category: "蛋白質", amount: "100 g", calories: 180, protein: 25, carbs: 0, fat: 8 },
+  { id: "seitan-100g", name: "麵筋/素雞", category: "蛋白質", amount: "100 g", calories: 120, protein: 20, carbs: 7, fat: 1.5 },
+  { id: "black-beans-cooked-100g", name: "黑豆（煮熟）", category: "蛋白質", amount: "100 g", calories: 132, protein: 8.9, carbs: 23.7, fat: 0.5 },
+  { id: "lentils-cooked-100g", name: "扁豆（煮熟）", category: "蛋白質", amount: "100 g", calories: 116, protein: 9, carbs: 20, fat: 0.4 },
+  { id: "cheese-slice-1", name: "起司片", category: "蛋白質", amount: "1 片（20 g）", calories: 65, protein: 4, carbs: 1, fat: 5 },
+  { id: "quinoa-cooked-150g", name: "藜麥（熟）", category: "主食/碳水", amount: "150 g", calories: 180, protein: 6.6, carbs: 32, fat: 2.9 },
+  { id: "whole-wheat-pasta-150g", name: "全麥義大利麵（熟）", category: "主食/碳水", amount: "150 g", calories: 186, protein: 7.5, carbs: 37, fat: 1.2 },
+  { id: "udon-noodles-200g", name: "烏龍麵（熟）", category: "主食/碳水", amount: "1 份（200 g）", calories: 210, protein: 5, carbs: 43, fat: 1 },
+  { id: "rice-noodles-200g", name: "米粉（熟）", category: "主食/碳水", amount: "1 份（200 g）", calories: 218, protein: 3.8, carbs: 50, fat: 0.4 },
+  { id: "bagel-1", name: "貝果（原味）", category: "主食/碳水", amount: "1 個", calories: 245, protein: 9, carbs: 48, fat: 1.5 },
+  { id: "cracker-wholegrain-30g", name: "全穀餅乾", category: "主食/碳水", amount: "30 g", calories: 130, protein: 3, carbs: 22, fat: 3.5 },
+  { id: "pumpkin-steamed-150g", name: "南瓜（蒸）", category: "主食/碳水", amount: "150 g", calories: 74, protein: 1.5, carbs: 18, fat: 0.2 },
+  { id: "soba-noodles-180g", name: "蕎麥麵（熟）", category: "主食/碳水", amount: "1 份（180 g）", calories: 178, protein: 8, carbs: 38, fat: 0.3 },
+  { id: "cabbage-150g", name: "高麗菜（少油）", category: "蔬菜水果", amount: "150 g", calories: 38, protein: 2, carbs: 8.7, fat: 0.3 },
+  { id: "spinach-100g", name: "菠菜（少油）", category: "蔬菜水果", amount: "100 g", calories: 23, protein: 3, carbs: 3.8, fat: 0.3 },
+  { id: "mushroom-150g", name: "菇類（少油）", category: "蔬菜水果", amount: "150 g", calories: 33, protein: 4.5, carbs: 4.8, fat: 0.5 },
+  { id: "carrot-100g", name: "紅蘿蔔", category: "蔬菜水果", amount: "100 g", calories: 41, protein: 0.9, carbs: 10, fat: 0.2 },
+  { id: "cucumber-150g", name: "小黃瓜", category: "蔬菜水果", amount: "150 g", calories: 24, protein: 1, carbs: 5.4, fat: 0.2 },
+  { id: "orange-1", name: "柳橙", category: "蔬菜水果", amount: "1 顆（中）", calories: 62, protein: 1.2, carbs: 15.4, fat: 0.2 },
+  { id: "kiwi-1", name: "奇異果", category: "蔬菜水果", amount: "1 顆", calories: 42, protein: 0.8, carbs: 10, fat: 0.4 },
+  { id: "grapes-100g", name: "葡萄", category: "蔬菜水果", amount: "100 g", calories: 69, protein: 0.7, carbs: 18, fat: 0.2 },
+  { id: "watermelon-200g", name: "西瓜", category: "蔬菜水果", amount: "200 g", calories: 60, protein: 1.2, carbs: 15, fat: 0.3 },
+  { id: "americano-iced", name: "冰美式（無糖）", category: "乳品/飲品", amount: "1 杯", calories: 5, protein: 0, carbs: 0, fat: 0 },
+  { id: "latte-lowfat-360ml", name: "拿鐵（低脂無糖）", category: "乳品/飲品", amount: "1 杯（360 ml）", calories: 168, protein: 12, carbs: 18, fat: 4.8 },
+  { id: "coconut-water-330ml", name: "椰子水（無糖）", category: "乳品/飲品", amount: "1 瓶（330 ml）", calories: 60, protein: 0.7, carbs: 15, fat: 0.2 },
+  { id: "sports-drink-500ml", name: "運動飲料", category: "乳品/飲品", amount: "1 瓶（500 ml）", calories: 120, protein: 0, carbs: 30, fat: 0 },
+  { id: "walnut-30g", name: "核桃", category: "健康脂肪", amount: "30 g", calories: 196, protein: 4.5, carbs: 4, fat: 19.5 },
+  { id: "chia-seeds-15g", name: "奇亞籽", category: "健康脂肪", amount: "1 大匙（15 g）", calories: 73, protein: 2.5, carbs: 6.3, fat: 4.7 },
+  { id: "pumpkin-seeds-30g", name: "南瓜子", category: "健康脂肪", amount: "30 g", calories: 168, protein: 9, carbs: 4, fat: 14 },
+  { id: "store-banana-1", name: "超商香蕉", category: "超商", amount: "1 根", calories: 105, protein: 1.3, carbs: 27, fat: 0.3 },
+  { id: "store-onigiri-chicken-1", name: "超商雞肉飯糰", category: "超商", amount: "1 顆", calories: 220, protein: 8, carbs: 38, fat: 4.5 },
+  { id: "store-boiled-egg-2", name: "超商水煮蛋", category: "超商", amount: "2 顆", calories: 140, protein: 12, carbs: 1, fat: 10 },
+  { id: "store-protein-drink-1", name: "超商蛋白飲", category: "超商", amount: "1 瓶", calories: 160, protein: 20, carbs: 12, fat: 3 },
+  { id: "store-microwave-sweet-potato", name: "超商烤地瓜", category: "超商", amount: "1 條（180 g）", calories: 155, protein: 2.9, carbs: 36, fat: 0.2 },
+  { id: "sushi-salmon-6", name: "鮭魚握壽司", category: "外食", amount: "6 貫", calories: 360, protein: 20, carbs: 48, fat: 10 },
+  { id: "chicken-over-rice-1", name: "雞肉丼飯", category: "外食", amount: "1 碗", calories: 650, protein: 32, carbs: 82, fat: 20 },
+  { id: "pasta-chicken-tomato-1", name: "番茄雞肉義大利麵", category: "外食", amount: "1 盤", calories: 580, protein: 32, carbs: 75, fat: 16 },
+  { id: "subway-chicken-6inch", name: "雞肉潛艇堡（6 吋）", category: "外食", amount: "1 份", calories: 370, protein: 25, carbs: 46, fat: 9 },
+  { id: "dan-dan-noodle-1", name: "擔擔麵", category: "外食", amount: "1 碗", calories: 620, protein: 22, carbs: 70, fat: 28 },
+  { id: "fried-chicken-bite-100g", name: "鹽酥雞", category: "點心", amount: "100 g", calories: 300, protein: 20, carbs: 15, fat: 18 },
+  { id: "sweet-potato-balls-1", name: "地瓜球", category: "點心", amount: "1 小份", calories: 280, protein: 2, carbs: 42, fat: 12 },
+  { id: "cookie-3", name: "餅乾", category: "點心", amount: "3 片", calories: 160, protein: 2, carbs: 22, fat: 7 },
+  { id: "ice-cream-1", name: "冰淇淋", category: "點心", amount: "1 球", calories: 140, protein: 2.5, carbs: 16, fat: 7 }
 ];
 
 const DEFAULT_PLAN = {
@@ -179,6 +224,8 @@ let state = loadState();
 let currentDayIndex = 0;
 let selectedCheckinDate = getTodayDateKey();
 let activeFoodCategory = "全部";
+let quickFoodPage = 1;
+const QUICK_FOODS_PER_PAGE = 12;
 
 const weeklyScheduleEl = document.getElementById("weeklySchedule");
 const loadGuideEl = document.getElementById("loadGuide");
@@ -195,6 +242,7 @@ const foodSummaryEl = document.getElementById("foodSummary");
 const foodListEl = document.getElementById("foodList");
 const foodDialog = document.getElementById("foodDialog");
 const quickFoodListEl = document.getElementById("quickFoodList");
+const foodPaginationEl = document.getElementById("foodPagination");
 const foodCategoryFiltersEl = document.getElementById("foodCategoryFilters");
 const foodGoalProgressEl = document.getElementById("foodGoalProgress");
 const foodCategoryInput = document.getElementById("foodCategoryInput");
@@ -464,16 +512,33 @@ function renderQuickFoodPresets() {
   const presets = activeFoodCategory === "全部"
     ? QUICK_FOOD_PRESETS
     : QUICK_FOOD_PRESETS.filter(preset => getPresetCategory(preset) === activeFoodCategory);
-  quickFoodListEl.innerHTML = presets.map(preset => `
+  const totalPages = Math.max(1, Math.ceil(presets.length / QUICK_FOODS_PER_PAGE));
+  if (quickFoodPage > totalPages) quickFoodPage = totalPages;
+  const start = (quickFoodPage - 1) * QUICK_FOODS_PER_PAGE;
+  const pageItems = presets.slice(start, start + QUICK_FOODS_PER_PAGE);
+
+  quickFoodListEl.innerHTML = pageItems.map(preset => `
     <button class="btn quick-food-btn" onclick="addPresetFood('${preset.id}')">
       <strong>${escapeHtml(preset.name)} <span class="food-category">${escapeHtml(getPresetCategory(preset))}</span></strong>
       <small>${escapeHtml(preset.amount)}｜${escapeHtml(preset.calories)} kcal / P${escapeHtml(preset.protein)} C${escapeHtml(preset.carbs)} F${escapeHtml(preset.fat)}</small>
     </button>
   `).join("");
+
+  foodPaginationEl.innerHTML = `
+    <button class="btn" onclick="changeQuickFoodPage(-1)" ${quickFoodPage === 1 ? "disabled" : ""}>上一頁</button>
+    <p>第 ${quickFoodPage} / ${totalPages} 頁（共 ${presets.length} 項）</p>
+    <button class="btn" onclick="changeQuickFoodPage(1)" ${quickFoodPage === totalPages ? "disabled" : ""}>下一頁</button>
+  `;
 }
 
 function setFoodCategory(category) {
   activeFoodCategory = FOOD_CATEGORIES.includes(category) ? category : "全部";
+  quickFoodPage = 1;
+  renderQuickFoodPresets();
+}
+
+function changeQuickFoodPage(offset) {
+  quickFoodPage += offset;
   renderQuickFoodPresets();
 }
 
@@ -787,6 +852,7 @@ window.openFoodDialog = openFoodDialog;
 window.deleteFoodEntry = deleteFoodEntry;
 window.addPresetFood = addPresetFood;
 window.setFoodCategory = setFoodCategory;
+window.changeQuickFoodPage = changeQuickFoodPage;
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./sw.js").catch(err => console.error("SW 註冊失敗", err));
