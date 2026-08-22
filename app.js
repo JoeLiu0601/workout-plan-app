@@ -51,7 +51,55 @@ const QUICK_FOOD_PRESETS = [
   { id: "rice-cooked-two-third-bowl", name: "白飯（2/3 碗）", amount: "130 g", calories: 203, protein: 3.5, carbs: 44, fat: 0.4 },
   { id: "store-chicken-breast-pack", name: "超商舒肥雞胸", amount: "1 包", calories: 130, protein: 23, carbs: 2, fat: 3 },
   { id: "store-salad-chicken", name: "超商生菜沙拉 + 雞胸", amount: "1 份", calories: 260, protein: 25, carbs: 12, fat: 10 },
-  { id: "yogurt-high-protein-cup", name: "高蛋白優格杯", amount: "1 杯", calories: 180, protein: 15, carbs: 18, fat: 5 }
+  { id: "yogurt-high-protein-cup", name: "高蛋白優格杯", amount: "1 杯", calories: 180, protein: 15, carbs: 18, fat: 5 },
+  { id: "milkfish-steamed-100g", name: "虱目魚（清蒸）", category: "蛋白質", amount: "100 g", calories: 148, protein: 20, carbs: 0, fat: 7 },
+  { id: "oyster-cooked-100g", name: "牡蠣（熟）", category: "蛋白質", amount: "100 g", calories: 81, protein: 9.5, carbs: 5, fat: 2.5 },
+  { id: "squid-boiled-100g", name: "透抽/花枝（川燙）", category: "蛋白質", amount: "100 g", calories: 92, protein: 15.6, carbs: 3.1, fat: 1.4 },
+  { id: "clams-steamed-100g", name: "文蛤（清蒸/蛤蜊湯）", category: "蛋白質", amount: "100 g 蛤仁", calories: 74, protein: 12.8, carbs: 2.6, fat: 1 },
+  { id: "mackerel-grilled-100g", name: "鯖魚（鹽烤）", category: "蛋白質", amount: "100 g", calories: 205, protein: 20, carbs: 0, fat: 13 },
+  { id: "egg-tofu-100g", name: "雞蛋豆腐", category: "蛋白質", amount: "100 g", calories: 90, protein: 7, carbs: 3, fat: 5 },
+  { id: "oden-fishcake-80g", name: "關東煮甜不辣/魚板", category: "蛋白質", amount: "1 片（80 g）", calories: 90, protein: 8, carbs: 10, fat: 2.5 },
+  { id: "congee-plain-300g", name: "白粥/稀飯", category: "主食/碳水", amount: "1 碗（300 g）", calories: 108, protein: 2.1, carbs: 24, fat: 0.3 },
+  { id: "taiwan-egg-pancake-1", name: "蛋餅", category: "主食/碳水", amount: "1 份", calories: 280, protein: 9, carbs: 36, fat: 11 },
+  { id: "steamed-bun-1", name: "白饅頭", category: "主食/碳水", amount: "1 顆（65 g）", calories: 155, protein: 4.5, carbs: 30, fat: 1.5 },
+  { id: "sesame-flatbread-1", name: "芝麻燒餅", category: "主食/碳水", amount: "1 片（70 g）", calories: 220, protein: 6, carbs: 35, fat: 6 },
+  { id: "corn-boiled-1", name: "水煮玉米", category: "主食/碳水", amount: "1 根（150 g）", calories: 129, protein: 4.8, carbs: 28, fat: 2.1 },
+  { id: "taro-steamed-100g", name: "芋頭（蒸）", category: "主食/碳水", amount: "100 g", calories: 142, protein: 1.9, carbs: 34.6, fat: 0.1 },
+  { id: "yam-100g", name: "山藥", category: "主食/碳水", amount: "100 g", calories: 118, protein: 1.5, carbs: 27.9, fat: 0.2 },
+  { id: "adzuki-cooked-100g", name: "紅豆（煮熟無糖）", category: "主食/碳水", amount: "100 g", calories: 128, protein: 7.5, carbs: 24.9, fat: 0.1 },
+  { id: "job-tears-cooked-100g", name: "薏仁（煮熟）", category: "主食/碳水", amount: "100 g", calories: 120, protein: 4, carbs: 24, fat: 1 },
+  { id: "mung-bean-cooked-100g", name: "綠豆（煮熟無糖）", category: "主食/碳水", amount: "100 g", calories: 105, protein: 7, carbs: 19.2, fat: 0.4 },
+  { id: "sweet-potato-leaves-100g", name: "地瓜葉（少油）", category: "蔬菜水果", amount: "100 g", calories: 35, protein: 3.1, carbs: 5.7, fat: 0.5 },
+  { id: "lotus-root-100g", name: "蓮藕（川燙）", category: "蔬菜水果", amount: "100 g", calories: 74, protein: 2.6, carbs: 17.2, fat: 0.1 },
+  { id: "bamboo-shoot-100g", name: "竹筍（水煮）", category: "蔬菜水果", amount: "100 g", calories: 17, protein: 2.1, carbs: 2.8, fat: 0 },
+  { id: "water-spinach-100g", name: "空心菜（少油）", category: "蔬菜水果", amount: "100 g", calories: 29, protein: 2.4, carbs: 4.2, fat: 0.5 },
+  { id: "bitter-melon-100g", name: "苦瓜", category: "蔬菜水果", amount: "100 g", calories: 17, protein: 1, carbs: 3.7, fat: 0.2 },
+  { id: "amaranth-100g", name: "莧菜（少油）", category: "蔬菜水果", amount: "100 g", calories: 21, protein: 2.2, carbs: 3.7, fat: 0.3 },
+  { id: "cherry-tomato-100g", name: "小番茄", category: "蔬菜水果", amount: "10 顆（100 g）", calories: 18, protein: 0.9, carbs: 3.9, fat: 0.2 },
+  { id: "guava-100g", name: "芭樂", category: "蔬菜水果", amount: "100 g", calories: 68, protein: 2.6, carbs: 14.3, fat: 1 },
+  { id: "papaya-cup", name: "木瓜", category: "蔬菜水果", amount: "1 杯（145 g）", calories: 62, protein: 0.7, carbs: 15.7, fat: 0.4 },
+  { id: "mango-cup", name: "芒果", category: "蔬菜水果", amount: "1 杯（165 g）", calories: 99, protein: 1.4, carbs: 24.7, fat: 0.6 },
+  { id: "pineapple-cup", name: "鳳梨", category: "蔬菜水果", amount: "1 杯（165 g）", calories: 83, protein: 0.9, carbs: 21.6, fat: 0.2 },
+  { id: "green-tea-unsweetened-500ml", name: "無糖綠茶", category: "乳品/飲品", amount: "1 瓶（500 ml）", calories: 5, protein: 0, carbs: 0.5, fat: 0 },
+  { id: "job-tears-drink-250ml", name: "無糖薏仁漿", category: "乳品/飲品", amount: "1 盒（250 ml）", calories: 100, protein: 3, carbs: 20, fat: 1 },
+  { id: "tofu-pudding-unsweetened", name: "豆花（少糖）", category: "乳品/飲品", amount: "1 碗", calories: 90, protein: 7, carbs: 8, fat: 3 },
+  { id: "bubble-tea-half-sugar", name: "珍珠奶茶（半糖）", category: "乳品/飲品", amount: "1 杯（500 ml）", calories: 300, protein: 4, carbs: 58, fat: 7 },
+  { id: "tahini-15g", name: "芝麻醬", category: "健康脂肪", amount: "1 大匙（15 g）", calories: 89, protein: 2.6, carbs: 3.2, fat: 8 },
+  { id: "cashew-30g", name: "腰果", category: "健康脂肪", amount: "1 把（30 g）", calories: 163, protein: 4.4, carbs: 9, fat: 13 },
+  { id: "boiled-peanut-50g", name: "水煮花生", category: "健康脂肪", amount: "可食仁 50 g", calories: 159, protein: 6.8, carbs: 10.9, fat: 11.3 },
+  { id: "store-chawanmushi-150g", name: "超商茶碗蒸", category: "超商", amount: "1 盒（150 g）", calories: 90, protein: 9, carbs: 3, fat: 5 },
+  { id: "store-oden-tofu-80g", name: "超商關東煮豆腐", category: "超商", amount: "1 塊（80 g）", calories: 55, protein: 5.5, carbs: 2.5, fat: 2.8 },
+  { id: "store-drinking-yogurt-200ml", name: "超商低脂優酪乳", category: "超商", amount: "1 瓶（200 ml）", calories: 120, protein: 6, carbs: 18, fat: 2.5 },
+  { id: "store-salmon-riceball-1", name: "超商鮭魚飯糰", category: "超商", amount: "1 顆", calories: 200, protein: 7, carbs: 35, fat: 4 },
+  { id: "store-cold-noodle-1", name: "超商涼麵（芝麻醬）", category: "超商", amount: "1 份", calories: 380, protein: 10, carbs: 55, fat: 13 },
+  { id: "oyster-omelette-1", name: "蚵仔煎", category: "外食", amount: "1 份", calories: 280, protein: 12, carbs: 38, fat: 9 },
+  { id: "pork-rib-rice-1", name: "排骨飯", category: "外食", amount: "1 盒", calories: 620, protein: 28, carbs: 80, fat: 20 },
+  { id: "taiwan-noodle-soup-1", name: "切仔麵", category: "外食", amount: "1 碗", calories: 250, protein: 10, carbs: 42, fat: 4 },
+  { id: "oyster-vermicelli-1", name: "蚵仔麵線", category: "外食", amount: "1 碗", calories: 200, protein: 8, carbs: 35, fat: 3 },
+  { id: "gua-bao-1", name: "刈包", category: "外食", amount: "1 顆", calories: 350, protein: 14, carbs: 46, fat: 11 },
+  { id: "pig-blood-cake-1", name: "豬血糕", category: "點心", amount: "1 串", calories: 130, protein: 5, carbs: 25, fat: 2 },
+  { id: "grass-jelly-1", name: "仙草凍（少糖）", category: "點心", amount: "1 份", calories: 90, protein: 0.3, carbs: 22, fat: 0 },
+  { id: "pineapple-cake-1", name: "鳳梨酥", category: "點心", amount: "1 個", calories: 155, protein: 1.8, carbs: 21, fat: 7 }
 ];
 
 const DEFAULT_PLAN = {
@@ -152,6 +200,7 @@ const foodGoalProgressEl = document.getElementById("foodGoalProgress");
 const foodCategoryInput = document.getElementById("foodCategoryInput");
 
 function getPresetCategory(preset) {
+  if (FOOD_CATEGORIES.includes(preset.category)) return preset.category;
   if (preset.id.includes("bento") || preset.id.includes("luwei") || preset.id.includes("hotpot")
     || preset.id.includes("noodle") || preset.id.includes("self-serve") || preset.id.includes("beef-soup")
     || preset.id.includes("chicken-rice")) return "外食";
