@@ -62,7 +62,19 @@
         </label>
         <p id="foodSummary" class="muted"></p>
       </div>
+      <div class="food-goals">
+        <h3>每日目標</h3>
+        <div class="goal-inputs">
+          <label>熱量 kcal<input id="goalCaloriesInput" inputmode="decimal"></label>
+          <label>蛋白質 g<input id="goalProteinInput" inputmode="decimal"></label>
+          <label>碳水 g<input id="goalCarbsInput" inputmode="decimal"></label>
+          <label>脂肪 g<input id="goalFatInput" inputmode="decimal"></label>
+        </div>
+        <button id="saveGoalsBtn" class="btn">儲存目標</button>
+        <div id="foodGoalProgress" class="goal-progress"></div>
+      </div>
       <h3>常用食物快速新增（每次 1 份）</h3>
+      <div id="foodCategoryFilters" class="category-filters"></div>
       <div id="quickFoodList" class="quick-food-list"></div>
       <p class="muted">以下為常見營養估算值，實際請以包裝標示為主，可新增後再編輯微調。</p>
       <div id="foodList"></div>
@@ -117,6 +129,9 @@
       <input type="hidden" id="foodIndex">
       <label>時間（可空白）<input id="foodTimeInput" placeholder="例如 08:30"></label>
       <label>食物名稱<input id="foodNameInput" required></label>
+      <label>分類
+        <select id="foodCategoryInput"></select>
+      </label>
       <label>份量<input id="foodAmountInput" placeholder="例如 雞胸肉 150g"></label>
       <label>熱量（kcal）<input id="foodCaloriesInput" inputmode="decimal"></label>
       <label>蛋白質（g）<input id="foodProteinInput" inputmode="decimal"></label>

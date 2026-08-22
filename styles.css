@@ -160,7 +160,7 @@ label {
   gap: 4px;
 }
 
-input, textarea {
+input, textarea, select {
   width: 100%;
   border-radius: 8px;
   border: 1px solid #374151;
@@ -170,6 +170,56 @@ input, textarea {
 }
 
 textarea { min-height: 70px; }
+
+.food-goals {
+  border: 1px solid #374151;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 12px 0;
+}
+
+.food-goals h3 { margin: 0 0 8px; }
+
+.goal-inputs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(100px, 1fr));
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.goal-progress {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(130px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.goal-progress p {
+  margin: 0;
+  padding: 8px;
+  border-radius: 8px;
+  background: #1f2937;
+}
+
+.category-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.category-filter.active { background: var(--primary); }
+
+.food-category {
+  display: inline-block;
+  margin-left: 6px;
+  color: #93c5fd;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 520px) {
+  .goal-inputs { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+}
 
 table {
   width: 100%;

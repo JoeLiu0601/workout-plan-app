@@ -1,4 +1,6 @@
 const STORAGE_KEY = "workout-plan-v1";
+const FOOD_CATEGORIES = ["蛋白質", "主食/碳水", "蔬菜水果", "乳品/飲品", "健康脂肪", "超商", "外食", "點心"];
+const DEFAULT_FOOD_GOALS = { calories: 2000, protein: 130, carbs: 220, fat: 60 };
 const QUICK_FOOD_PRESETS = [
   { id: "chicken-breast-cooked-100g", name: "雞胸肉（熟）", amount: "100 g", calories: 165, protein: 31, carbs: 0, fat: 3.6 },
   { id: "egg-whole-1", name: "全蛋", amount: "1 顆", calories: 72, protein: 6.3, carbs: 0.4, fat: 4.8 },
@@ -128,6 +130,7 @@ const DEFAULT_PLAN = {
 let state = loadState();
 let currentDayIndex = 0;
 let selectedCheckinDate = getTodayDateKey();
+let activeFoodCategory = "全部";
 
 const weeklyScheduleEl = document.getElementById("weeklySchedule");
 const loadGuideEl = document.getElementById("loadGuide");
@@ -144,6 +147,25 @@ const foodSummaryEl = document.getElementById("foodSummary");
 const foodListEl = document.getElementById("foodList");
 const foodDialog = document.getElementById("foodDialog");
 const quickFoodListEl = document.getElementById("quickFoodList");
+const foodCategoryFiltersEl = document.getElementById("foodCategoryFilters");
+const foodGoalProgressEl = document.getElementById("foodGoalProgress");
+const foodCategoryInput = document.getElementById("foodCategoryInput");
+
+function getPresetCategory(preset) {
+  if (preset.id.includes("bento") || preset.id.includes("luwei") || preset.id.includes("hotpot")
+    || preset.id.includes("noodle") || preset.id.includes("self-serve") || preset.id.includes("beef-soup")
+    || preset.id.includes("chicken-rice")) return "外食";
+  if (preset.id.includes("store") || preset.id.includes("tea-egg") || preset.id.includes("rice-ball")
+    || preset.id.includes("protein-bar") || preset.id.includes("high-protein")) return "超商";
+  if (preset.id.includes("rice") || preset.id.includes("oats") || preset.id.includes("potato")
+    || preset.id.includes("bread") || preset.id.includes("sweet-potato")) return "主食/碳水";
+  if (preset.id.includes("banana") || preset.id.includes("apple") || preset.id.includes("broccoli")) return "蔬菜水果";
+  if (preset.id.includes("almond") || preset.id.includes("avocado") || preset.id.includes("olive")
+    || preset.id.includes("peanut-butter")) return "健康脂肪";
+  if (preset.id.includes("milk") || preset.id.includes("yogurt") || preset.id.includes("soy-milk")
+    || preset.id.includes("coffee")) return "乳品/飲品";
+  return "蛋白質";
+}
 
 function escapeHtml(value) {
   return String(value)
@@ -160,6 +182,7 @@ function normalizeText(value, fallback = "") {
 }
 
 function normalizeNumber(value) {
+  if (value === "" || value === null || value === undefined) return "";
   const num = Number(value);
   if (!Number.isFinite(num) || num < 0) return "";
   return num;
@@ -177,6 +200,15 @@ function ensurePlanSchema(plan) {
   const normalized = structuredClone(plan);
   if (!normalized.checkins || typeof normalized.checkins !== "object") normalized.checkins = {};
   if (!normalized.foodLogs || typeof normalized.foodLogs !== "object") normalized.foodLogs = {};
+  if (!normalized.foodGoals || typeof normalized.foodGoals !== "object") {
+    normalized.foodGoals = structuredClone(DEFAULT_FOOD_GOALS);
+  }
+  normalized.foodGoals = {
+    calories: normalizeNumber(normalized.foodGoals.calories) || DEFAULT_FOOD_GOALS.calories,
+    protein: normalizeNumber(normalized.foodGoals.protein) || DEFAULT_FOOD_GOALS.protein,
+    carbs: normalizeNumber(normalized.foodGoals.carbs) || DEFAULT_FOOD_GOALS.carbs,
+    fat: normalizeNumber(normalized.foodGoals.fat) || DEFAULT_FOOD_GOALS.fat
+  };
   if (!Array.isArray(normalized.loadGuide)) normalized.loadGuide = structuredClone(DEFAULT_PLAN.loadGuide);
   if (!Array.isArray(normalized.progression)) normalized.progression = structuredClone(DEFAULT_PLAN.progression);
   if (!Array.isArray(normalized.weeklySchedule)) normalized.weeklySchedule = structuredClone(DEFAULT_PLAN.weeklySchedule);
@@ -220,6 +252,7 @@ function ensurePlanSchema(plan) {
       id: normalizeText(entry?.id, `food-${dateKey}-${index + 1}`),
       time: normalizeText(entry?.time, ""),
       name: normalizeText(entry?.name, ""),
+      category: FOOD_CATEGORIES.includes(entry?.category) ? entry.category : "點心",
       amount: normalizeText(entry?.amount, ""),
       calories: normalizeNumber(entry?.calories),
       protein: normalizeNumber(entry?.protein),
@@ -323,6 +356,7 @@ function renderFoodLog() {
   const totalFat = entries.reduce((sum, item) => sum + (typeof item.fat === "number" ? item.fat : 0), 0);
 
   foodSummaryEl.textContent = `共 ${entries.length} 筆｜熱量 ${totalCalories.toFixed(0)} kcal｜P ${totalProtein.toFixed(1)} / C ${totalCarbs.toFixed(1)} / F ${totalFat.toFixed(1)}`;
+  renderFoodGoals({ calories: totalCalories, protein: totalProtein, carbs: totalCarbs, fat: totalFat });
 
   if (!entries.length) {
     foodListEl.innerHTML = `<p class="muted">這天還沒有飲食紀錄。</p>`;
@@ -331,7 +365,7 @@ function renderFoodLog() {
 
   foodListEl.innerHTML = entries.map((entry, index) => `
     <article class="food-card">
-      <h3>${index + 1}. ${escapeHtml(entry.name || "未命名")}</h3>
+      <h3>${index + 1}. ${escapeHtml(entry.name || "未命名")}<span class="food-category">${escapeHtml(entry.category)}</span></h3>
       <p><strong>時間：</strong>${escapeHtml(entry.time || "未填寫")}</p>
       <p><strong>份量：</strong>${escapeHtml(entry.amount || "未填寫")}</p>
       <div class="food-grid">
@@ -349,13 +383,51 @@ function renderFoodLog() {
   `).join("");
 }
 
+function renderFoodGoals(totals) {
+  const goals = state.foodGoals;
+  document.getElementById("goalCaloriesInput").value = goals.calories;
+  document.getElementById("goalProteinInput").value = goals.protein;
+  document.getElementById("goalCarbsInput").value = goals.carbs;
+  document.getElementById("goalFatInput").value = goals.fat;
+
+  const labels = [
+    ["熱量", totals.calories, goals.calories, "kcal"],
+    ["蛋白質", totals.protein, goals.protein, "g"],
+    ["碳水", totals.carbs, goals.carbs, "g"],
+    ["脂肪", totals.fat, goals.fat, "g"]
+  ];
+  foodGoalProgressEl.innerHTML = labels.map(([label, total, goal, unit]) => {
+    const remaining = Math.max(goal - total, 0);
+    const status = total > goal ? `超過 ${(total - goal).toFixed(0)}` : `還差 ${remaining.toFixed(0)}`;
+    return `<p><strong>${label}</strong> ${total.toFixed(0)} / ${goal} ${unit}<br><span class="muted">${status} ${unit}</span></p>`;
+  }).join("");
+}
+
+function renderCategoryFilters() {
+  const categories = ["全部", ...FOOD_CATEGORIES];
+  foodCategoryFiltersEl.innerHTML = categories.map(category => `
+    <button class="btn category-filter ${activeFoodCategory === category ? "active" : ""}" onclick="setFoodCategory('${category}')">
+      ${escapeHtml(category)}
+    </button>
+  `).join("");
+}
+
 function renderQuickFoodPresets() {
-  quickFoodListEl.innerHTML = QUICK_FOOD_PRESETS.map(preset => `
+  renderCategoryFilters();
+  const presets = activeFoodCategory === "全部"
+    ? QUICK_FOOD_PRESETS
+    : QUICK_FOOD_PRESETS.filter(preset => getPresetCategory(preset) === activeFoodCategory);
+  quickFoodListEl.innerHTML = presets.map(preset => `
     <button class="btn quick-food-btn" onclick="addPresetFood('${preset.id}')">
-      <strong>${escapeHtml(preset.name)}</strong>
+      <strong>${escapeHtml(preset.name)} <span class="food-category">${escapeHtml(getPresetCategory(preset))}</span></strong>
       <small>${escapeHtml(preset.amount)}｜${escapeHtml(preset.calories)} kcal / P${escapeHtml(preset.protein)} C${escapeHtml(preset.carbs)} F${escapeHtml(preset.fat)}</small>
     </button>
   `).join("");
+}
+
+function setFoodCategory(category) {
+  activeFoodCategory = FOOD_CATEGORIES.includes(category) ? category : "全部";
+  renderQuickFoodPresets();
 }
 
 function addPresetFood(presetId) {
@@ -370,6 +442,7 @@ function addPresetFood(presetId) {
     id: `food-${selectedCheckinDate}-${Date.now()}`,
     time: "",
     name: preset.name,
+    category: getPresetCategory(preset),
     amount: preset.amount,
     calories: preset.calories,
     protein: preset.protein,
@@ -544,13 +617,17 @@ function toggleExerciseCheckin(index, checked) {
 function openFoodDialog(index = -1) {
   const entries = getCurrentFoodEntries();
   const entry = index >= 0 ? entries[index] : {
-    id: "", time: "", name: "", amount: "", calories: "", protein: "", carbs: "", fat: "", note: ""
+    id: "", time: "", name: "", category: "點心", amount: "", calories: "", protein: "", carbs: "", fat: "", note: ""
   };
 
+  foodCategoryInput.innerHTML = FOOD_CATEGORIES
+    .map(category => `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`)
+    .join("");
   document.getElementById("foodIndex").value = String(index);
   document.getElementById("foodDialogTitle").textContent = index >= 0 ? "編輯飲食" : "新增飲食";
   document.getElementById("foodTimeInput").value = entry.time || "";
   document.getElementById("foodNameInput").value = entry.name || "";
+  foodCategoryInput.value = FOOD_CATEGORIES.includes(entry.category) ? entry.category : "點心";
   document.getElementById("foodAmountInput").value = entry.amount || "";
   document.getElementById("foodCaloriesInput").value = entry.calories === "" ? "" : String(entry.calories);
   document.getElementById("foodProteinInput").value = entry.protein === "" ? "" : String(entry.protein);
@@ -567,6 +644,7 @@ function saveFoodFromDialog(event) {
     id: "",
     time: document.getElementById("foodTimeInput").value.trim(),
     name: document.getElementById("foodNameInput").value.trim(),
+    category: FOOD_CATEGORIES.includes(foodCategoryInput.value) ? foodCategoryInput.value : "點心",
     amount: document.getElementById("foodAmountInput").value.trim(),
     calories: normalizeNumber(document.getElementById("foodCaloriesInput").value.trim()),
     protein: normalizeNumber(document.getElementById("foodProteinInput").value.trim()),
@@ -592,6 +670,22 @@ function saveFoodFromDialog(event) {
   saveState();
   renderFoodLog();
   foodDialog.close();
+}
+
+function saveFoodGoals() {
+  const nextGoals = {
+    calories: normalizeNumber(document.getElementById("goalCaloriesInput").value.trim()),
+    protein: normalizeNumber(document.getElementById("goalProteinInput").value.trim()),
+    carbs: normalizeNumber(document.getElementById("goalCarbsInput").value.trim()),
+    fat: normalizeNumber(document.getElementById("goalFatInput").value.trim())
+  };
+  if (Object.values(nextGoals).some(value => value === "")) {
+    alert("請填入有效且大於 0 的每日目標。");
+    return;
+  }
+  state.foodGoals = nextGoals;
+  saveState();
+  renderFoodLog();
 }
 
 function deleteFoodEntry(index) {
@@ -629,6 +723,7 @@ document.getElementById("resetBtn").addEventListener("click", resetPlan);
 document.getElementById("editDayBtn").addEventListener("click", editCurrentDayMeta);
 document.getElementById("addFoodBtn").addEventListener("click", () => openFoodDialog(-1));
 document.getElementById("foodForm").addEventListener("submit", saveFoodFromDialog);
+document.getElementById("saveGoalsBtn").addEventListener("click", saveFoodGoals);
 checkinDateInput.addEventListener("change", () => {
   if (!checkinDateInput.value) return;
   setSelectedDate(checkinDateInput.value);
@@ -644,6 +739,7 @@ window.toggleExerciseCheckin = toggleExerciseCheckin;
 window.openFoodDialog = openFoodDialog;
 window.deleteFoodEntry = deleteFoodEntry;
 window.addPresetFood = addPresetFood;
+window.setFoodCategory = setFoodCategory;
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./sw.js").catch(err => console.error("SW 註冊失敗", err));
