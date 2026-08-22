@@ -364,17 +364,15 @@ function renderFoodLog() {
   }
 
   foodListEl.innerHTML = entries.map((entry, index) => `
-    <article class="food-card">
+    <article class="food-card food-entry-compact">
       <h3>${index + 1}. ${escapeHtml(entry.name || "未命名")}<span class="food-category">${escapeHtml(entry.category)}</span></h3>
-      <p><strong>時間：</strong>${escapeHtml(entry.time || "未填寫")}</p>
-      <p><strong>份量：</strong>${escapeHtml(entry.amount || "未填寫")}</p>
-      <div class="food-grid">
-        <p><strong>熱量：</strong>${entry.calories === "" ? "未填寫" : `${escapeHtml(entry.calories)} kcal`}</p>
-        <p><strong>蛋白質：</strong>${entry.protein === "" ? "未填寫" : `${escapeHtml(entry.protein)} g`}</p>
-        <p><strong>碳水：</strong>${entry.carbs === "" ? "未填寫" : `${escapeHtml(entry.carbs)} g`}</p>
-        <p><strong>脂肪：</strong>${entry.fat === "" ? "未填寫" : `${escapeHtml(entry.fat)} g`}</p>
-      </div>
-      <p><strong>備註：</strong>${escapeHtml(entry.note || "未填寫")}</p>
+      <p class="food-entry-detail">${escapeHtml(entry.time ? `${entry.time}｜` : "")}${escapeHtml(entry.amount || "份量未填寫")}</p>
+      <p class="food-entry-macros">
+        ${entry.calories === "" ? "熱量未填寫" : `${escapeHtml(entry.calories)} kcal`}
+        ｜P ${entry.protein === "" ? "-" : `${escapeHtml(entry.protein)}g`}
+        ｜C ${entry.carbs === "" ? "-" : `${escapeHtml(entry.carbs)}g`}
+        ｜F ${entry.fat === "" ? "-" : `${escapeHtml(entry.fat)}g`}
+      </p>
       <div class="row">
         <button class="btn" onclick="openFoodDialog(${index})">編輯</button>
         <button class="btn btn-danger" onclick="deleteFoodEntry(${index})">刪除</button>

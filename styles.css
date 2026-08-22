@@ -104,6 +104,33 @@ body {
   margin: 0 0 8px;
 }
 
+.food-entry-compact {
+  padding: 8px 10px;
+}
+
+.food-entry-compact h3 {
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.food-entry-compact .row {
+  margin-top: 6px;
+}
+
+.food-entry-compact .btn {
+  padding: 6px 9px;
+  font-size: 0.85rem;
+}
+
+.food-entry-detail,
+.food-entry-macros {
+  margin: 2px 0;
+  font-size: 0.9rem;
+}
+
+.food-entry-detail { color: var(--muted); }
+.food-entry-macros { color: #cbd5e1; }
+
 .food-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
