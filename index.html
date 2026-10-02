@@ -1,152 +1,88 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#111827">
-  <title>我的健身菜單</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#214638">
+  <meta name="description" content="把訓練和飲食，慢慢練成日常。記錄每一組、每一餐，看見自己的累積。">
+  <title>日常訓練 — DAILY FORM</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="app-header">
-    <h1>我的健身菜單</h1>
-    <p>健身工廠版：新手增肌減脂（可手動編輯）</p>
-  </header>
-
-  <main class="container">
-    <section class="panel">
-      <h2>每週安排</h2>
-      <div id="weeklySchedule"></div>
-      <button id="editScheduleBtn" class="btn">編輯每週安排</button>
+  <svg class="svg-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-training" viewBox="0 0 24 24"><path d="m4 9 5-5m6 16 5-5M2 7l5-5m10 20 5-5M7 7l10 10m-9-6 3-3m2 8 3-3"/></symbol>
+    <symbol id="i-food" viewBox="0 0 24 24"><path d="M5 3v7m3-7v7m3-7v7M5 7h6m-3 3v11M19 3c-3 3-4 7-4 10h4m0-10v18"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 3v17h17M8 15l4-5 4 2 5-7"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+  </defs></svg>
+  <a href="#main" class="skip-link">跳至主要內容</a>
+  <aside class="sidebar">
+    <a class="brand" href="#today" data-view="today" aria-label="日常訓練首頁"><img src="icon.svg" alt="" width="42" height="42"><span>日常訓練<small>DAILY FORM</small></span></a>
+    <span class="nav-label">YOUR EVERYDAY PRACTICE</span>
+    <nav class="main-nav" aria-label="主要導覽">
+      <button type="button" class="nav-item active" data-view="today" aria-current="page"><svg class="icon"><use href="#i-home"/></svg><span>今天</span><span class="nav-count">01</span></button>
+      <button type="button" class="nav-item" data-view="training"><svg class="icon"><use href="#i-training"/></svg><span>訓練</span><span class="nav-count">02</span></button>
+      <button type="button" class="nav-item" data-view="food"><svg class="icon"><use href="#i-food"/></svg><span>飲食</span><span class="nav-count">03</span></button>
+      <button type="button" class="nav-item" data-view="progress"><svg class="icon"><use href="#i-chart"/></svg><span>進度</span><span class="nav-count">04</span></button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-note"><span class="note-mark">↗</span><p>每一次練習，<br>都在累積改變。</p><small>A LITTLE BETTER, EVERY DAY.</small></div>
+      <button type="button" class="nav-item" data-view="settings"><svg class="icon"><use href="#i-settings"/></svg><span>設定與課表</span></button>
+      <div class="local-status"><span></span>儲存在此裝置</div>
+    </div>
+  </aside>
+  <main id="main" class="main-content">
+    <header class="mobile-header"><a class="brand" href="#today" data-view="today"><img src="icon.svg" alt="" width="34" height="34"><span>日常訓練<small>DAILY FORM</small></span></a><button class="btn icon-btn" type="button" data-view="settings" aria-label="設定與課表"><svg class="icon"><use href="#i-settings"/></svg></button></header>
+    <section id="view-today" class="app-view" aria-labelledby="todayTitle">
+      <header class="page-header"><div><p class="eyebrow">MAKE IT A HABIT</p><h1 id="todayTitle">今天，也更進一步<span class="accent-dot">.</span></h1><p class="page-subtitle">把每一次訓練、每一餐，累積成自己的節奏。</p></div><div id="homeDateLabel" class="date-label"></div></header>
+      <div id="weekStrip" class="week-strip" aria-label="本週訓練"></div>
+      <div class="dashboard-grid"><div id="dashboardWorkout" class="hero-card"></div><div id="dashboardNutrition" class="panel nutrition-panel"></div></div>
+      <div id="dashboardRecent" class="panel recent-panel"></div>
+      <footer class="page-footer"><span>日常訓練 / DAILY FORM</span><span>進步，來自日復一日。</span></footer>
     </section>
-
-    <section class="panel">
-      <h2>重量建議</h2>
-      <ul id="loadGuide"></ul>
+    <section id="view-training" class="app-view" hidden aria-labelledby="trainingTitle">
+      <header class="page-header"><div><p class="eyebrow">ONE SET AT A TIME</p><h1 id="trainingTitle">專注這一組<span class="accent-dot">.</span></h1><p class="page-subtitle">記下重量與次數，找到下一次的起點。</p></div><label class="date-field">訓練日期<input id="checkinDateInput" type="date" required></label></header>
+      <div id="dayTabs" class="day-tabs" aria-label="選擇訓練日"></div>
+      <div class="training-heading"><div><p class="eyebrow">YOUR WORKOUT</p><h2 id="dayTitle"></h2><p id="dayFocus" class="muted"></p></div><button id="editDayBtn" class="btn btn-secondary btn-small" type="button">編輯課表</button></div>
+      <div id="checkinSummary" class="checkin-summary" aria-live="polite"></div>
+      <div class="rest-timer"><div><span id="restStatus">組間休息</span><strong id="restTimeValue" role="timer">01:30</strong></div><label class="sr-only" for="restDurationInput">自動休息計時</label><select id="restDurationInput"><option value="0">不自動計時</option><option value="60">60 秒</option><option value="90" selected>90 秒</option><option value="120">120 秒</option><option value="180">180 秒</option></select><div class="rest-actions"><button id="startRestBtn" class="btn btn-secondary btn-small" type="button">開始</button><button id="extendRestBtn" class="btn btn-ghost btn-small" type="button" hidden>＋30 秒</button><button id="stopRestBtn" class="btn btn-ghost btn-small" type="button" hidden>結束</button></div></div>
+      <div id="exerciseList" class="exercise-list"></div>
+      <button id="addExerciseBtn" class="btn btn-secondary full-width add-exercise" type="button"><svg class="icon"><use href="#i-plus"/></svg>新增訓練動作</button>
     </section>
-
-    <section class="panel">
-      <h2>12 週漸進建議</h2>
-      <div id="progression"></div>
-    </section>
-
-    <section class="panel">
-      <div class="day-header">
-        <h2 id="dayTitle"></h2>
-        <div class="row">
-          <button id="editDayBtn" class="btn">編輯當天資訊</button>
-          <button id="prevDayBtn" class="btn">上一天</button>
-          <button id="nextDayBtn" class="btn">下一天</button>
-        </div>
-      </div>
-      <p id="dayFocus" class="muted"></p>
-      <div class="row checkin-toolbar">
-        <label>打卡日期
-          <input id="checkinDateInput" type="date">
-        </label>
-        <p id="checkinSummary" class="muted"></p>
-      </div>
-      <div id="exerciseList"></div>
-      <button id="addExerciseBtn" class="btn btn-primary">新增動作</button>
-    </section>
-
-    <section class="panel">
-      <div class="day-header">
-        <h2>每日飲食紀錄</h2>
-        <button id="addFoodBtn" class="btn btn-primary">新增飲食</button>
-      </div>
-      <div class="row checkin-toolbar">
-        <label>飲食日期
-          <input id="foodDateInput" type="date">
-        </label>
-        <p id="foodSummary" class="muted"></p>
-      </div>
-      <div class="food-goals">
-        <h3>每日目標</h3>
-        <div class="goal-inputs">
-          <label>熱量 kcal<input id="goalCaloriesInput" inputmode="decimal"></label>
-          <label>蛋白質 g<input id="goalProteinInput" inputmode="decimal"></label>
-          <label>碳水 g<input id="goalCarbsInput" inputmode="decimal"></label>
-          <label>脂肪 g<input id="goalFatInput" inputmode="decimal"></label>
-        </div>
-        <button id="saveGoalsBtn" class="btn">儲存目標</button>
-        <div id="foodGoalProgress" class="goal-progress"></div>
-      </div>
-      <h3>今日已記錄</h3>
+    <section id="view-food" class="app-view" hidden aria-labelledby="foodTitle">
+      <header class="page-header"><div><p class="eyebrow">FUEL YOUR EVERYDAY</p><h1 id="foodTitle">好好吃，好好練<span class="accent-dot">.</span></h1><p class="page-subtitle">用每一餐，支持今天的自己。</p></div><label class="date-field">飲食日期<input id="foodDateInput" type="date" required></label></header>
+      <div class="panel food-overview"><div class="section-heading"><h2>今日營養</h2><button type="button" class="btn btn-ghost btn-small" data-view="settings">調整目標 <span aria-hidden="true">↗</span></button></div><div id="foodSummary"></div><div id="foodGoalProgress"></div></div>
+      <div class="section-heading meal-heading"><div><p class="eyebrow">FOOD DIARY</p><h2>每一餐的紀錄</h2></div><button id="addFoodBtn" class="btn btn-primary" type="button"><svg class="icon"><use href="#i-plus"/></svg>新增食物</button></div>
       <div id="foodList"></div>
-      <h3>常用食物快速新增（每次 1 份）</h3>
-      <div id="foodCategoryFilters" class="category-filters"></div>
-      <div id="quickFoodList" class="quick-food-list"></div>
-      <div id="foodPagination" class="food-pagination"></div>
-      <p class="muted">以下為常見營養估算值，實際請以包裝標示為主，可新增後再編輯微調。</p>
     </section>
-
-    <section class="panel">
-      <h2>資料管理</h2>
-      <div class="row">
-        <button id="exportBtn" class="btn">匯出 JSON 備份</button>
-        <label class="btn">
-          匯入 JSON
-          <input id="importInput" type="file" accept="application/json" hidden>
-        </label>
-        <button id="resetBtn" class="btn btn-danger">重設為預設課表</button>
-      </div>
-      <p class="muted">提示：手機可將此頁加入主畫面，離線也能開啟。</p>
+    <section id="view-progress" class="app-view" hidden aria-labelledby="progressTitle">
+      <header class="page-header"><div><p class="eyebrow">SMALL STEPS, REAL PROGRESS</p><h1 id="progressTitle">看見你的累積<span class="accent-dot">.</span></h1><p class="page-subtitle">每一組都有意義，每一次都有跡可循。</p></div></header>
+      <div id="progressStats" class="stats-grid"></div>
+      <div class="panel activity-panel"><p class="eyebrow">THIS WEEK</p><div id="activityChart"></div></div>
+      <div class="section-heading"><div><p class="eyebrow">TRAINING JOURNAL</p><h2>訓練紀錄</h2></div></div><div id="historyList" class="panel history-list"></div>
+    </section>
+    <section id="view-settings" class="app-view" hidden aria-labelledby="settingsTitle">
+      <header class="page-header"><div><p class="eyebrow">FIND YOUR OWN RHYTHM</p><h1 id="settingsTitle">你的日常節奏<span class="accent-dot">.</span></h1><p class="page-subtitle">安排訓練、設定目標，讓紀錄更貼近自己。</p></div></header>
+      <div class="settings-grid"><div class="panel"><div class="section-heading"><h2>每週安排</h2><button id="editScheduleBtn" type="button" class="btn btn-secondary btn-small">編輯</button></div><div id="weeklySchedule"></div></div>
+      <div class="panel"><div class="section-heading"><h2>每日營養目標</h2></div><p class="muted form-intro">依照自己的訓練與飲食計畫調整。</p><div class="form-grid"><label>熱量 <span class="unit">kcal</span><input id="goalCaloriesInput" type="number" min="0.1" step="any" required></label><label>蛋白質 <span class="unit">g</span><input id="goalProteinInput" type="number" min="0.1" step="any" required></label><label>碳水化合物 <span class="unit">g</span><input id="goalCarbsInput" type="number" min="0.1" step="any" required></label><label>脂肪 <span class="unit">g</span><input id="goalFatInput" type="number" min="0.1" step="any" required></label></div><button id="saveGoalsBtn" type="button" class="btn btn-primary full-width">儲存目標</button></div></div>
+      <div class="settings-grid"><div class="panel"><p class="eyebrow">START WITH THE BASICS</p><h2>重量與訓練提醒</h2><ul id="loadGuide" class="guide-list"></ul></div><div class="panel"><p class="eyebrow">KEEP BUILDING</p><h2>漸進訓練計畫</h2><div id="progression"></div></div></div>
+      <div class="panel backup-panel"><div><h2>管理你的紀錄</h2><p class="muted">資料儲存在目前的瀏覽器。匯出備份，隨時保留自己的累積。</p></div><div class="backup-actions"><button id="exportBtn" type="button" class="btn btn-secondary">匯出備份</button><label class="btn btn-secondary import-label">匯入備份<input id="importInput" type="file" accept=".json,application/json"></label><button id="resetBtn" type="button" class="btn btn-ghost btn-danger">還原預設課表</button></div></div>
     </section>
   </main>
-
-  <dialog id="exerciseDialog">
-    <form id="exerciseForm" method="dialog" class="dialog-form">
-      <h3 id="dialogTitle">編輯動作</h3>
-      <input type="hidden" id="exerciseIndex">
-      <label>動作名稱<input id="nameInput" required></label>
-      <label>組數<input id="setsInput" required></label>
-      <label>次數/時間<input id="repsInput" required></label>
-      <label>主要肌群<input id="muscleInput"></label>
-      <label>常見錯誤/注意事項<textarea id="notesInput"></textarea></label>
-      <label>器材被占用替代動作<textarea id="altInput"></textarea></label>
-      <label>器材照片連結（可空白）<input id="imageInput" type="url" placeholder="https://..."></label>
-      <div class="row">
-        <button value="cancel" class="btn">取消</button>
-        <button id="saveExerciseBtn" value="default" class="btn btn-primary">儲存</button>
-      </div>
-    </form>
-  </dialog>
-
-  <dialog id="scheduleDialog">
-    <form id="scheduleForm" method="dialog" class="dialog-form">
-      <h3>編輯每週安排</h3>
-      <div id="scheduleEditor"></div>
-      <div class="row">
-        <button value="cancel" class="btn">取消</button>
-        <button id="saveScheduleBtn" value="default" class="btn btn-primary">儲存</button>
-      </div>
-    </form>
-  </dialog>
-
-  <dialog id="foodDialog">
-    <form id="foodForm" method="dialog" class="dialog-form">
-      <h3 id="foodDialogTitle">新增飲食</h3>
-      <input type="hidden" id="foodIndex">
-      <label>時間（可空白）<input id="foodTimeInput" placeholder="例如 08:30"></label>
-      <label>食物名稱<input id="foodNameInput" required></label>
-      <label>分類
-        <select id="foodCategoryInput"></select>
-      </label>
-      <label>份量<input id="foodAmountInput" placeholder="例如 雞胸肉 150g"></label>
-      <label>熱量（kcal）<input id="foodCaloriesInput" inputmode="decimal"></label>
-      <label>蛋白質（g）<input id="foodProteinInput" inputmode="decimal"></label>
-      <label>碳水（g）<input id="foodCarbsInput" inputmode="decimal"></label>
-      <label>脂肪（g）<input id="foodFatInput" inputmode="decimal"></label>
-      <label>備註<textarea id="foodNoteInput"></textarea></label>
-      <div class="row">
-        <button value="cancel" class="btn">取消</button>
-        <button id="saveFoodBtn" value="default" class="btn btn-primary">儲存</button>
-      </div>
-    </form>
-  </dialog>
-
-  <script src="app.js"></script>
+  <dialog id="exerciseDialog" aria-labelledby="dialogTitle"><form id="exerciseForm"><div class="dialog-heading"><div><p class="eyebrow">YOUR EXERCISE</p><h2 id="dialogTitle">新增訓練動作</h2></div><button type="button" class="btn icon-btn" data-close="exerciseDialog" aria-label="關閉"><svg class="icon"><use href="#i-close"/></svg></button></div><input id="exerciseIndex" type="hidden"><label>動作名稱<input id="nameInput" required maxlength="120" placeholder="例如：啞鈴臥推"></label><div class="form-grid"><label>建議組數<input id="setsInput" required placeholder="例如：3"></label><label>建議次數<input id="repsInput" required placeholder="例如：8–12"></label></div><label>訓練部位<input id="muscleInput" placeholder="例如：胸部、三頭肌"></label><label>動作提醒<textarea id="notesInput" rows="2" placeholder="記下姿勢或呼吸提醒"></textarea></label><label>替代動作<input id="altInput" placeholder="器材不便時的替代選擇"></label><label>示範圖片網址 <span class="unit">選填</span><input id="imageInput" type="url" placeholder="https://..."></label><div class="dialog-actions"><button type="button" class="btn btn-secondary" data-close="exerciseDialog">取消</button><button id="saveExerciseBtn" type="submit" class="btn btn-primary">儲存動作</button></div></form></dialog>
+  <dialog id="scheduleDialog" aria-labelledby="scheduleDialogTitle"><form id="scheduleForm"><div class="dialog-heading"><div><p class="eyebrow">PLAN YOUR WEEK</p><h2 id="scheduleDialogTitle">調整訓練安排</h2></div><button type="button" class="btn icon-btn" data-close="scheduleDialog" aria-label="關閉"><svg class="icon"><use href="#i-close"/></svg></button></div><div id="scheduleEditor"></div><div class="dialog-actions"><button type="button" class="btn btn-secondary" data-close="scheduleDialog">取消</button><button id="saveScheduleBtn" type="submit" class="btn btn-primary">儲存安排</button></div></form></dialog>
+  <dialog id="foodPickerDialog" class="food-picker-dialog" aria-labelledby="pickerTitle"><div class="dialog-heading"><div><p class="eyebrow">ADD A LITTLE FUEL</p><h2 id="pickerTitle">今天吃了什麼？</h2></div><button type="button" class="btn icon-btn" data-close="foodPickerDialog" aria-label="關閉"><svg class="icon"><use href="#i-close"/></svg></button></div><label class="search-field"><svg class="icon"><use href="#i-search"/></svg><input id="foodSearchInput" type="search" placeholder="搜尋食物，例如：雞胸、豆漿、便當" aria-label="搜尋食物" autocomplete="off"></label><div class="food-mode-tabs" aria-label="食物來源"><button type="button" class="active" data-food-mode="all">全部食物</button><button type="button" data-food-mode="recent">最近使用</button><button type="button" data-food-mode="favorites">我的收藏</button></div><div id="foodCategoryFilters" class="category-filters"></div><div id="quickFoodList" class="quick-food-list"></div><div id="foodPagination" class="food-pagination"></div><div class="picker-footer"><span class="muted">找不到想記錄的食物？</span><button id="customFoodBtn" type="button" class="btn btn-secondary btn-small"><svg class="icon"><use href="#i-plus"/></svg>自行新增</button></div></dialog>
+  <dialog id="foodDialog" aria-labelledby="foodDialogTitle"><form id="foodForm"><div class="dialog-heading"><div><p class="eyebrow">YOUR FOOD DIARY</p><h2 id="foodDialogTitle">新增食物</h2></div><button type="button" class="btn icon-btn" data-close="foodDialog" aria-label="關閉"><svg class="icon"><use href="#i-close"/></svg></button></div><input id="foodIndex" type="hidden"><label>食物名稱<input id="foodNameInput" required maxlength="120" placeholder="例如：雞胸肉沙拉"></label><div class="form-grid"><label>餐次<select id="foodMealInput"><option>早餐</option><option>午餐</option><option>晚餐</option><option>點心</option><option>未分類</option></select></label><label>時間<input id="foodTimeInput" type="time"></label></div><div class="form-grid"><label>食物分類<select id="foodCategoryInput"></select></label><label>每份份量<input id="foodAmountInput" placeholder="例如：100 g、1 碗"></label></div><label id="portionField" hidden>食用份數<input id="foodPortionInput" type="number" value="1" min="0.1" max="100" step="0.1"><span class="field-help">營養數值會隨份數自動換算。</span></label><div class="nutrition-inputs form-grid"><label>熱量 <span class="unit">kcal</span><input id="foodCaloriesInput" type="number" min="0" step="any"></label><label>蛋白質 <span class="unit">g</span><input id="foodProteinInput" type="number" min="0" step="any"></label><label>碳水化合物 <span class="unit">g</span><input id="foodCarbsInput" type="number" min="0" step="any"></label><label>脂肪 <span class="unit">g</span><input id="foodFatInput" type="number" min="0" step="any"></label></div><label>備註 <span class="unit">選填</span><textarea id="foodNoteInput" rows="2" placeholder="例如：少飯、醬料另外放"></textarea></label><p class="field-help">食物庫的營養數值為估算，可依包裝標示調整。</p><div class="dialog-actions"><button type="button" class="btn btn-secondary" data-close="foodDialog">取消</button><button id="saveFoodBtn" type="submit" class="btn btn-primary">儲存紀錄</button></div></form></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="historyDialog" aria-labelledby="historyTitle"><div class="dialog-heading"><div><p class="eyebrow">YOUR TRAINING JOURNAL</p><h2 id="historyTitle">訓練紀錄</h2></div><button type="button" class="btn icon-btn" data-close="historyDialog" aria-label="關閉訓練紀錄">×</button></div><div id="historyDetails"></div><div class="dialog-actions"><button type="button" class="btn btn-secondary" data-close="historyDialog">關閉</button></div></dialog>
+  <script src="data.js"></script><script src="store.js"></script><script src="app.js"></script>
 </body>
 </html>

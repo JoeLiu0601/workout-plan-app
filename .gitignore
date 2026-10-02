@@ -1,0 +1,15 @@
+node_modules/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*.json
+secrets*.json
+artifacts/
+playwright-report/
+test-results/
+*-backup.json
+daily-form-*.json
+.DS_Store
+Thumbs.db
