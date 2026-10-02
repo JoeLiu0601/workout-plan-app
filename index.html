@@ -6,10 +6,10 @@
   <meta name="theme-color" content="#214638">
   <meta name="description" content="把訓練和飲食，慢慢練成日常。記錄每一組、每一餐，看見自己的累積。">
   <title>日常訓練 — DAILY FORM</title>
-  <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="icons/icon-180.png">
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="icon.svg?v=8" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-180.png?v=8">
+  <link rel="manifest" href="manifest.json?v=8">
+  <link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body>
   <svg class="svg-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
@@ -25,7 +25,7 @@
   </defs></svg>
   <a href="#main" class="skip-link">跳至主要內容</a>
   <aside class="sidebar">
-    <a class="brand" href="#today" data-view="today" aria-label="日常訓練首頁"><img src="icon.svg" alt="" width="42" height="42"><span>日常訓練<small>DAILY FORM</small></span></a>
+    <a class="brand" href="#today" data-view="today" aria-label="日常訓練首頁"><img src="icon.svg?v=8" alt="" width="42" height="42"><span>日常訓練<small>DAILY FORM</small></span></a>
     <span class="nav-label">YOUR EVERYDAY PRACTICE</span>
     <nav class="main-nav" aria-label="主要導覽">
       <button type="button" class="nav-item active" data-view="today" aria-current="page"><svg class="icon"><use href="#i-home"/></svg><span>今天</span><span class="nav-count">01</span></button>
@@ -40,7 +40,7 @@
     </div>
   </aside>
   <main id="main" class="main-content">
-    <header class="mobile-header"><a class="brand" href="#today" data-view="today"><img src="icon.svg" alt="" width="34" height="34"><span>日常訓練<small>DAILY FORM</small></span></a><button class="btn icon-btn" type="button" data-view="settings" aria-label="設定與課表"><svg class="icon"><use href="#i-settings"/></svg></button></header>
+    <header class="mobile-header"><a class="brand" href="#today" data-view="today"><img src="icon.svg?v=8" alt="" width="34" height="34"><span>日常訓練<small>DAILY FORM</small></span></a><button class="btn icon-btn" type="button" data-view="settings" aria-label="設定與課表"><svg class="icon"><use href="#i-settings"/></svg></button></header>
     <section id="view-today" class="app-view" aria-labelledby="todayTitle">
       <header class="page-header"><div><p class="eyebrow">MAKE IT A HABIT</p><h1 id="todayTitle">今天，也更進一步<span class="accent-dot">.</span></h1><p class="page-subtitle">把每一次訓練、每一餐，累積成自己的節奏。</p></div><div id="homeDateLabel" class="date-label"></div></header>
       <div id="weekStrip" class="week-strip" aria-label="本週訓練"></div>
@@ -83,6 +83,6 @@
   <dialog id="foodDialog" aria-labelledby="foodDialogTitle"><form id="foodForm"><div class="dialog-heading"><div><p class="eyebrow">YOUR FOOD DIARY</p><h2 id="foodDialogTitle">新增食物</h2></div><button type="button" class="btn icon-btn" data-close="foodDialog" aria-label="關閉"><svg class="icon"><use href="#i-close"/></svg></button></div><input id="foodIndex" type="hidden"><label>食物名稱<input id="foodNameInput" required maxlength="120" placeholder="例如：雞胸肉沙拉"></label><div class="form-grid"><label>餐次<select id="foodMealInput"><option>早餐</option><option>午餐</option><option>晚餐</option><option>點心</option><option>未分類</option></select></label><label>時間<input id="foodTimeInput" type="time"></label></div><div class="form-grid"><label>食物分類<select id="foodCategoryInput"></select></label><label>每份份量<input id="foodAmountInput" placeholder="例如：100 g、1 碗"></label></div><label id="portionField" hidden>食用份數<input id="foodPortionInput" type="number" value="1" min="0.1" max="100" step="0.1"><span class="field-help">營養數值會隨份數自動換算。</span></label><div class="nutrition-inputs form-grid"><label>熱量 <span class="unit">kcal</span><input id="foodCaloriesInput" type="number" min="0" step="any"></label><label>蛋白質 <span class="unit">g</span><input id="foodProteinInput" type="number" min="0" step="any"></label><label>碳水化合物 <span class="unit">g</span><input id="foodCarbsInput" type="number" min="0" step="any"></label><label>脂肪 <span class="unit">g</span><input id="foodFatInput" type="number" min="0" step="any"></label></div><label>備註 <span class="unit">選填</span><textarea id="foodNoteInput" rows="2" placeholder="例如：少飯、醬料另外放"></textarea></label><p class="field-help">食物庫的營養數值為估算，可依包裝標示調整。</p><div class="dialog-actions"><button type="button" class="btn btn-secondary" data-close="foodDialog">取消</button><button id="saveFoodBtn" type="submit" class="btn btn-primary">儲存紀錄</button></div></form></dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <dialog id="historyDialog" aria-labelledby="historyTitle"><div class="dialog-heading"><div><p class="eyebrow">YOUR TRAINING JOURNAL</p><h2 id="historyTitle">訓練紀錄</h2></div><button type="button" class="btn icon-btn" data-close="historyDialog" aria-label="關閉訓練紀錄">×</button></div><div id="historyDetails"></div><div class="dialog-actions"><button type="button" class="btn btn-secondary" data-close="historyDialog">關閉</button></div></dialog>
-  <script src="data.js"></script><script src="store.js"></script><script src="app.js"></script>
+  <script src="data.js?v=8"></script><script src="store.js?v=8"></script><script src="app.js?v=8"></script>
 </body>
 </html>

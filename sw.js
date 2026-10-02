@@ -1,16 +1,18 @@
-const CACHE_NAME = "workout-app-cache-v7";
+const CACHE_NAME = "workout-app-cache-v8";
+// Keep asset versions aligned with index.html and manifest.json so an older
+// browser HTTP cache cannot mix previous scripts with the new page.
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css",
-  "./app.js",
-  "./data.js",
-  "./store.js",
-  "./manifest.json",
-  "./icon.svg",
-  "./icons/icon-180.png",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png"
+  "./styles.css?v=8",
+  "./app.js?v=8",
+  "./data.js?v=8",
+  "./store.js?v=8",
+  "./manifest.json?v=8",
+  "./icon.svg?v=8",
+  "./icons/icon-180.png?v=8",
+  "./icons/icon-192.png?v=8",
+  "./icons/icon-512.png?v=8"
 ];
 
 self.addEventListener("install", event => {
