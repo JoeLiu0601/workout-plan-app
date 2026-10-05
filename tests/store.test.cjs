@@ -6,7 +6,7 @@ const vm = require('node:vm');
 
 // Load the same dependency-free scripts the browser uses, without a DOM shim.
 const context = vm.createContext({});
-for (const file of ['data.js', 'store.js']) {
+for (const file of ['data.js', 'food-catalog.js', 'store.js']) {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'), context, { filename: file });
 }
 const { store, defaults, presets } = vm.runInContext(

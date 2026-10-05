@@ -1,4 +1,5 @@
 const WorkoutStore = (() => {
+  const foodIds = new Set(QUICK_FOOD_PRESETS.map(food => food.id));
   const isRecord = value => !!value && typeof value === "object" && !Array.isArray(value);
   const text = (value, fallback = "") => typeof value === "string" ? value : fallback;
   const safeId = (value, fallback) => typeof value === "string" && value && !["__proto__", "constructor", "prototype"].includes(value) ? value : fallback;
@@ -60,7 +61,7 @@ const WorkoutStore = (() => {
         category: FOOD_CATEGORIES.includes(entry.category) ? entry.category : "點心",
         meal: meals.includes(entry.meal) ? entry.meal : mealFromTime(text(entry.time)),
         amount: text(entry.amount), calories: number(entry.calories), protein: number(entry.protein), carbs: number(entry.carbs), fat: number(entry.fat), note: text(entry.note),
-        presetId: QUICK_FOOD_PRESETS.some(preset => preset.id === entry.presetId) ? entry.presetId : ""
+        presetId: foodIds.has(entry.presetId) ? entry.presetId : ""
       }));
     }
     result.checkins = {};
@@ -89,7 +90,7 @@ const WorkoutStore = (() => {
         result.workoutLogs[date][dayId] = normalized;
       }
     }
-    result.favoriteFoods = [...new Set(Array.isArray(plan.favoriteFoods) ? plan.favoriteFoods : [])].filter(id => QUICK_FOOD_PRESETS.some(preset => preset.id === id));
+    result.favoriteFoods = [...new Set(Array.isArray(plan.favoriteFoods) ? plan.favoriteFoods : [])].filter(id => foodIds.has(id));
     return result;
   }
   function totals(entries = []) {

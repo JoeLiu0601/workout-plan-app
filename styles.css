@@ -3332,3 +3332,26 @@ h4 {
     font-size:13px
   }
 }
+.food-brand {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+#foodCatalogSummary {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.food-data-credit {
+  margin: 16px 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.food-data-credit summary {
+  cursor: pointer;
+}
+.food-data-credit a,
+#foodSourceInfo a {
+  color: #214638;
+  text-decoration: underline;
+}

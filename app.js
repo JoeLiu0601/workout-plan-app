@@ -2,6 +2,8 @@ const $ = id => document.getElementById(id);
 const esc = value => String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
 const fmt = value => new Intl.NumberFormat("zh-TW", { maximumFractionDigits: 1 }).format(value);
 const uid = prefix => `${prefix}-${globalThis.crypto?.randomUUID?.() || `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`}`;
+const foodById = new Map(QUICK_FOOD_PRESETS.map(food => [food.id, food]));
+const foodSearch = FoodSearch.create(QUICK_FOOD_PRESETS.map(food => ({ ...food, presetId: food.id, category: getPresetCategory(food) })));
 const paths = {
   arrow: '<path d="M5 12h14m-6-6 6 6-6 6"/>', plus: '<path d="M12 5v14M5 12h14"/>',
   check: '<path d="m5 12 4 4L19 6"/>', star: '<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/>',
@@ -165,14 +167,14 @@ function renderFood() {
 }
 function openFoodPicker(meal = "") {
   pickerMeal = meal || WorkoutStore.mealFromTime(new Date().toTimeString().slice(0, 5));
-  foodQuery = ""; foodCategory = "全部"; foodLimit = 24; foodMode = recentFoods().length ? "recent" : "all";
+  foodQuery = ""; foodCategory = "全部"; foodLimit = 24; foodMode = "all";
   $("foodSearchInput").value = ""; renderPicker(); $("foodPickerDialog").showModal();
 }
 function recentFoods() {
   const seen = new Set(), recent = [];
   for (const date of Object.keys(state.foodLogs).sort().reverse()) {
     for (const entry of [...state.foodLogs[date]].reverse()) {
-      const preset = QUICK_FOOD_PRESETS.find(item => item.id === entry.presetId || (item.name === entry.name && item.amount === entry.amount));
+      const preset = foodById.get(entry.presetId) || QUICK_FOOD_PRESETS.find(item => item.name === entry.name && item.amount === entry.amount);
       const key = preset?.id || `${entry.name}|${entry.amount}`;
       if (seen.has(key)) continue;
       seen.add(key); recent.push({ ...entry, presetId: preset?.id || "" });
@@ -181,16 +183,28 @@ function recentFoods() {
   }
   return recent;
 }
+function presetNote(preset) {
+  if (!preset.source) return "營養估算值，可依包裝標示調整。";
+  return `${preset.brand ? `${preset.brand}；` : ""}食藥署${preset.source === "tfda-product" ? "廠商營養標示" : "食材營養資料"}（${FOOD_CATALOG_METADATA.snapshot} 整理）。基準份量：${preset.amount}。缺少的營養值留白，可依實際包裝調整。`;
+}
 function renderPicker() {
+  $("foodCatalogSummary").textContent = `${fmt(QUICK_FOOD_PRESETS.length)} 項食物 · 支援名稱、品牌、俗名與英文搜尋`;
   document.querySelectorAll("[data-food-mode]").forEach(button => { button.classList.toggle("active", button.dataset.foodMode === foodMode); button.setAttribute("aria-pressed", String(button.dataset.foodMode === foodMode)); });
   $("foodCategoryFilters").innerHTML = ["全部", ...FOOD_CATEGORIES].map(category => `<button class="category-filter ${category === foodCategory ? "active" : ""}" data-action="food-category" data-category="${category}" aria-pressed="${category === foodCategory}">${category}</button>`).join("");
-  let sources = foodMode === "recent" ? recentFoods().map((entry, index) => ({ ...entry, sourceIndex: index, recent: true, category: entry.category })) : QUICK_FOOD_PRESETS.filter(entry => foodMode !== "favorites" || state.favoriteFoods.includes(entry.id)).map(entry => ({ ...entry, presetId: entry.id, category: getPresetCategory(entry) }));
-  sources = sources.filter(entry => (foodCategory === "全部" || entry.category === foodCategory) && `${entry.name} ${entry.amount} ${entry.category}`.toLocaleLowerCase().includes(foodQuery.toLocaleLowerCase()));
-  $("quickFoodList").innerHTML = sources.slice(0, foodLimit).map(entry => `<div class="food-result"><button class="food-result-main" data-action="${entry.recent ? "repeat-food" : "preset-food"}" ${entry.recent ? `data-index="${entry.sourceIndex}"` : `data-id="${entry.id}"`}><span class="food-result-icon">${icon("food")}</span><span><strong>${esc(entry.name)}</strong><small>${esc(entry.amount)} · ${entry.calories === "" ? "—" : fmt(entry.calories)} kcal</small><span class="food-result-category">${esc(entry.category)}</span></span><span class="food-add">${icon("plus")}</span></button>${entry.presetId ? `<button class="icon-btn favorite-btn ${state.favoriteFoods.includes(entry.presetId) ? "is-favorite" : ""}" data-action="favorite-food" data-id="${entry.presetId}" aria-label="${state.favoriteFoods.includes(entry.presetId) ? "取消收藏" : "收藏"}${esc(entry.name)}" aria-pressed="${state.favoriteFoods.includes(entry.presetId)}">${icon("star")}</button>` : ""}</div>`).join("") || `<div class="empty-state"><h3>${foodQuery ? "沒有找到這項食物" : foodMode === "favorites" ? "把常吃的，留在這裡" : "還沒有最近使用的食物"}</h3><p>${foodMode === "favorites" && !foodQuery ? "在食物旁點星號，下次更快找到。" : "試試其他關鍵字、分類，或手動新增。"}</p><button class="btn btn-secondary" data-action="all-foods">查看全部食物</button></div>`;
+  const options = { category: foodCategory, favorites: foodMode === "favorites" ? new Set(state.favoriteFoods) : null };
+  const sources = foodMode === "recent"
+    ? FoodSearch.create(recentFoods().map((entry, index) => ({ ...foodById.get(entry.presetId), ...entry, sourceIndex: index, recent: true }))).search(foodQuery, options)
+    : foodSearch.search(foodQuery, options);
+  $("quickFoodList").innerHTML = sources.slice(0, foodLimit).map(entry => `<div class="food-result"><button class="food-result-main" data-action="${entry.recent ? "repeat-food" : "preset-food"}" ${entry.recent ? `data-index="${entry.sourceIndex}"` : `data-id="${entry.id}"`}><span class="food-result-icon">${icon("food")}</span><span><strong>${esc(entry.name)}</strong><small>${esc(entry.amount)} · ${entry.calories === "" ? "—" : fmt(entry.calories)} kcal</small>${entry.brand ? `<small class="food-brand">${esc(entry.brand)}</small>` : ""}<span class="food-result-category">${esc(entry.category)} · ${entry.source === "tfda-product" ? "品牌標示" : entry.source === "tfda" ? "食材分析" : "常見份量估算"}</span></span><span class="food-add">${icon("plus")}</span></button>${entry.presetId ? `<button class="icon-btn favorite-btn ${state.favoriteFoods.includes(entry.presetId) ? "is-favorite" : ""}" data-action="favorite-food" data-id="${entry.presetId}" aria-label="${state.favoriteFoods.includes(entry.presetId) ? "取消收藏" : "收藏"}${esc(entry.name)}" aria-pressed="${state.favoriteFoods.includes(entry.presetId)}">${icon("star")}</button>` : ""}</div>`).join("") || `<div class="empty-state"><h3>${foodQuery ? "沒有找到這項食物" : foodMode === "favorites" ? "把常吃的，留在這裡" : "還沒有最近使用的食物"}</h3><p>${foodMode === "favorites" && !foodQuery ? "在食物旁點星號，下次更快找到。" : "試試名稱、品牌或別名，也可以清除篩選或自行新增。"}</p><button class="btn btn-secondary" data-action="clear-food-filters">清除篩選</button></div>`;
   $("foodPagination").innerHTML = `<span class="muted">${sources.length} 項食物${sources.length > foodLimit ? ` · 已顯示 ${foodLimit} 項` : ""}</span>${sources.length > foodLimit ? '<button class="btn btn-secondary btn-small" data-action="more-foods">顯示更多</button>' : ""}`;
 }
 function openFoodForm({ index = -1, preset = null, repeat = null } = {}) {
-  const entry = index >= 0 ? foodEntries()[index] : preset ? { ...preset, category: getPresetCategory(preset), note: "營養估算值，可依包裝標示調整。", presetId: preset.id } : repeat || {};
+  const entry = index >= 0 ? foodEntries()[index] : preset ? { ...preset, category: getPresetCategory(preset), note: presetNote(preset), presetId: preset.id } : repeat || {};
+  const original = preset || foodById.get(entry.presetId);
+  $("foodSourceInfo").hidden = !original;
+  $("foodSourceInfo").innerHTML = original?.source
+    ? `<a href="${FOOD_CATALOG_METADATA.urls[original.source]}" target="_blank" rel="noopener noreferrer">食藥署開放資料${original.source === "tfda-product" ? "・廠商標示" : "・食材分析"}</a> · ${FOOD_CATALOG_METADATA.snapshot} 整理${original.brand ? `<br>${esc(original.brand)}` : ""}<br>請依上方份量記錄；缺少的營養值留白，可依實際包裝調整。`
+    : "常見份量估算；可依實際包裝或料理方式調整。";
   const meal = index >= 0 ? entry.meal : pickerMeal || WorkoutStore.mealFromTime(new Date().toTimeString().slice(0, 5));
   foodContext = { index, date: selectedDate, presetId: entry.presetId || "", base: preset };
   $("foodPickerDialog").close(); $("foodForm").reset(); $("foodIndex").value = index;
@@ -206,7 +220,7 @@ function updatePortion() {
   const base = foodContext?.base, portions = WorkoutStore.number($("foodPortionInput").value);
   if (!base || !(portions > 0) || portions > 100) return;
   $("foodAmountInput").value = portions === 1 ? base.amount : `${base.amount} × ${fmt(portions)}`;
-  for (const key of ["calories", "protein", "carbs", "fat"]) $(`food${key[0].toUpperCase()}${key.slice(1)}Input`).value = Math.round(base[key] * portions * 10) / 10;
+  for (const key of ["calories", "protein", "carbs", "fat"]) $(`food${key[0].toUpperCase()}${key.slice(1)}Input`).value = typeof base[key] === "number" ? Math.round(base[key] * portions * 10) / 10 : "";
 }
 function saveFood(event) {
   event.preventDefault(); const context = foodContext; if (!context) return;
@@ -388,11 +402,12 @@ document.addEventListener("click", event => {
     case "edit-food": openFoodForm({ index }); break;
     case "delete-food": deleteFood(index); break;
     case "food-category": foodCategory = target.dataset.category; foodLimit = 24; renderPicker(); break;
-    case "preset-food": openFoodForm({ preset: QUICK_FOOD_PRESETS.find(item => item.id === target.dataset.id) }); break;
+    case "preset-food": openFoodForm({ preset: foodById.get(target.dataset.id) }); break;
     case "repeat-food": openFoodForm({ repeat: recentFoods()[index] }); break;
     case "favorite-food": if (commit(next => { next.favoriteFoods = next.favoriteFoods.includes(target.dataset.id) ? next.favoriteFoods.filter(id => id !== target.dataset.id) : [...next.favoriteFoods, target.dataset.id]; })) renderPicker(); break;
     case "more-foods": foodLimit += 24; renderPicker(); break;
     case "all-foods": foodMode = "all"; foodCategory = "全部"; foodQuery = ""; foodLimit = 24; $("foodSearchInput").value = ""; renderPicker(); break;
+    case "clear-food-filters": foodMode = "all"; foodCategory = "全部"; foodLimit = 24; renderPicker(); break;
     case "history-date": openHistory(target.dataset.date); break;
     case "copy-previous": copyPrevious(index); break;
     case "remove-set": removeLastSet(index); break;
@@ -410,7 +425,7 @@ document.addEventListener("change", event => {
 });
 $("checkinDateInput").addEventListener("change", event => selectDate(event.target.value));
 $("foodDateInput").addEventListener("change", event => selectDate(event.target.value));
-$("foodSearchInput").addEventListener("input", event => { foodQuery = event.target.value.trim(); foodLimit = 24; renderPicker(); });
+$("foodSearchInput").addEventListener("input", event => { foodQuery = event.target.value.trim(); if (foodQuery) foodMode = "all"; foodLimit = 24; renderPicker(); });
 $("foodPortionInput").addEventListener("input", updatePortion);
 $("addExerciseBtn").addEventListener("click", () => openExercise());
 $("editDayBtn").addEventListener("click", editDay);

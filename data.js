@@ -1,5 +1,5 @@
 const STORAGE_KEY = "workout-plan-v1";
-const FOOD_CATEGORIES = ["蛋白質", "主食/碳水", "蔬菜水果", "乳品/飲品", "健康脂肪", "超商", "外食", "點心"];
+const FOOD_CATEGORIES = ["蛋白質", "主食/碳水", "蔬菜水果", "乳品/飲品", "健康脂肪", "超商", "外食", "點心", "調味料", "包裝/調理食品"];
 const DEFAULT_FOOD_GOALS = { calories: 2000, protein: 130, carbs: 220, fat: 60 };
 const QUICK_FOOD_PRESETS = [
   { id: "chicken-breast-cooked-100g", name: "雞胸肉（熟）", amount: "100 g", calories: 165, protein: 31, carbs: 0, fat: 3.6 },
